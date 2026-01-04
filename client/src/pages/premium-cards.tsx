@@ -186,8 +186,13 @@ const INITIAL_PRODUCTS: ProductCardProps[] = [];
 
 export default function PremiumCardsPage() {
   const [products, setProducts] = useState<ProductCardProps[]>(() => {
+    // Check if we have saved products in localStorage
     const saved = localStorage.getItem("premium_products");
-    return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    // If no saved products, return an empty array (no default/mock cards)
+    return [];
   });
 
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem("admin_auth") === "true");
