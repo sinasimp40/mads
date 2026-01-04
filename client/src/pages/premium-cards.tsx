@@ -459,20 +459,23 @@ export default function PremiumCardsPage() {
           </div>
           
           <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide">
-            {["All", "Paid Groups", "Software", "Courses", "Newsletters", "Trading", "Reselling"].map((filter) => (
-              <button 
-                key={filter}
-                onClick={() => setActiveCategory(filter)}
-                className={cn(
-                  "px-6 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap border h-12",
-                  activeCategory === filter 
-                    ? "bg-white text-black border-white" 
-                    : "bg-white/5 text-muted-foreground border-white/5 hover:text-white hover:bg-white/10"
-                )}
-              >
-                {filter}
-              </button>
-            ))}
+            {(() => {
+              const dynamicCategories = ["All", ...Array.from(new Set(products.flatMap(p => p.tags)))].filter(Boolean);
+              return dynamicCategories.map((filter) => (
+                <button 
+                  key={filter}
+                  onClick={() => setActiveCategory(filter)}
+                  className={cn(
+                    "px-6 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap border h-12",
+                    activeCategory === filter 
+                      ? "bg-white text-black border-white" 
+                      : "bg-white/5 text-muted-foreground border-white/5 hover:text-white hover:bg-white/10"
+                  )}
+                >
+                  {filter}
+                </button>
+              ));
+            })()}
           </div>
         </div>
 
