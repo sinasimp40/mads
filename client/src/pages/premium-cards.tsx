@@ -181,34 +181,8 @@ const HeroSection = () => (
   </div>
 );
 
-// Initial Mock Data
-const INITIAL_PRODUCTS: ProductCardProps[] = [
-  {
-    id: "1",
-    title: "Phantom Checker",
-    description: "The ultimate ticket monitoring solution for professional resellers. Never miss a drop again.",
-    price: "600.00",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070",
-    tags: ["Reselling", "Tickets", "Bot"],
-    rating: 5.0,
-    reviews: 500,
-    featured: true,
-    type: "software",
-    joinLink: "#"
-  },
-  {
-    id: "2",
-    title: "Ticket Broker University",
-    description: "Learn the secrets of ticket brokering from industry veterans. Comprehensive guides and daily support.",
-    price: "149.97",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=2070",
-    tags: ["Education", "Community", "Finance"],
-    rating: 4.97,
-    reviews: 134,
-    type: "course",
-    joinLink: "#"
-  }
-];
+// Initial Mock Data (Empty for users to populate)
+const INITIAL_PRODUCTS: ProductCardProps[] = [];
 
 export default function PremiumCardsPage() {
   const [products, setProducts] = useState<ProductCardProps[]>(() => {
