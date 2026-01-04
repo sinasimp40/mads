@@ -185,15 +185,7 @@ const HeroSection = () => (
 const INITIAL_PRODUCTS: ProductCardProps[] = [];
 
 export default function PremiumCardsPage() {
-  const [products, setProducts] = useState<ProductCardProps[]>(() => {
-    // Check if we have saved products in localStorage
-    const saved = localStorage.getItem("premium_products");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    // If no saved products, return an empty array (no default/mock cards)
-    return [];
-  });
+  const [products, setProducts] = useState<ProductCardProps[]>(() => []);
 
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem("admin_auth") === "true");
 
@@ -218,7 +210,8 @@ export default function PremiumCardsPage() {
 
   useEffect(() => {
     localStorage.setItem("premium_products", JSON.stringify(products));
-  }, [products]);
+    if (isAdmin) localStorage.setItem("admin_auth", "true");
+  }, [products, isAdmin]);
 
   const handleAddProduct = () => {
     if (!newProduct.title || !newProduct.description || !newProduct.price) return;
