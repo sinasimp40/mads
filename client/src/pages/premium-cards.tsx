@@ -91,13 +91,12 @@ const PremiumCard = ({ product, onDelete, onEdit }: {
           )}
         </div>
 
-        {/* Price Tag */}
-        <div className="absolute bottom-3 right-3 z-20">
-          <div className="bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-primary/20 text-white font-bold text-sm shadow-lg">
-            {product.price.startsWith('$') ? product.price : `$${product.price}`}
-            <span className="text-xs text-muted-foreground font-normal ml-1">/mo</span>
+          <div className="absolute bottom-3 right-3 z-20">
+            <div className="bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-full border border-primary/20 text-white font-bold text-sm shadow-lg">
+              {product.price === "Free" ? "Free" : (product.price.startsWith('$') ? product.price : `$${product.price}`)}
+              {product.price !== "Free" && <span className="text-xs text-muted-foreground font-normal ml-1">/mo</span>}
+            </div>
           </div>
-        </div>
       </div>
 
       {/* Content Section */}
@@ -214,7 +213,7 @@ export default function PremiumCardsPage() {
   }, [products, isAdmin]);
 
   const handleAddProduct = () => {
-    if (!newProduct.title || !newProduct.description || !newProduct.price) return;
+    if (!newProduct.title || !newProduct.description) return;
     
     if (editingProduct) {
       setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...newProduct } as ProductCardProps : p));
@@ -224,7 +223,7 @@ export default function PremiumCardsPage() {
         id: Math.random().toString(36).substr(2, 9),
         title: newProduct.title as string,
         description: newProduct.description as string,
-        price: newProduct.price as string,
+        price: newProduct.price || "Free",
         image: newProduct.image || "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
         tags: newProduct.tags || ["General"],
         rating: newProduct.rating || 5,
@@ -343,13 +342,13 @@ export default function PremiumCardsPage() {
                       <Input 
                         placeholder="e.g. Reselling, Software, Course" 
                         className="bg-black/50 border-white/10"
-                        value={newProduct.type === "community" ? "Paid Groups" : newProduct.type === "software" ? "Software" : newProduct.type === "course" ? "Courses" : (newProduct.tags?.[0] || "")}
+                        value={newProduct.type === "community" ? (newProduct.tags?.[0] || "") : newProduct.type === "software" ? "Software" : newProduct.type === "course" ? "Courses" : (newProduct.tags?.[0] || "")}
                         onChange={e => {
                           const val = e.target.value;
                           setNewProduct({
                             ...newProduct, 
-                            type: "community", // default base type
-                            tags: [val] // use tags for free-form category
+                            type: "community", 
+                            tags: [val]
                           })
                         }}
                       />
