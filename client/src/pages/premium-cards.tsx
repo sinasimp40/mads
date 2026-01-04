@@ -434,7 +434,7 @@ export default function PremiumCardsPage() {
           
           <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide">
             {(() => {
-              const dynamicCategories = ["All", ...Array.from(new Set(products.flatMap(p => p.tags)))].filter(Boolean);
+              const dynamicCategories = ["All", ...Array.from(new Set(products.flatMap(p => p.tags))).filter(Boolean)];
               return dynamicCategories.map((filter) => (
                 <button 
                   key={filter}
