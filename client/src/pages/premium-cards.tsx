@@ -291,7 +291,8 @@ export default function PremiumCardsPage() {
                            (activeCategory === "Paid Groups" && p.type === "community") ||
                            (activeCategory === "Software" && p.type === "software") ||
                            (activeCategory === "Courses" && p.type === "course") ||
-                           p.tags.some(t => t.toLowerCase() === activeCategory.toLowerCase());
+                           p.tags.some(t => t.toLowerCase() === activeCategory.toLowerCase()) ||
+                           p.type.toLowerCase() === activeCategory.toLowerCase();
     return matchesSearch && matchesCategory;
   });
 
@@ -367,19 +368,19 @@ export default function PremiumCardsPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>Category / Type</Label>
-                      <Select 
-                        onValueChange={(v: any) => setNewProduct({...newProduct, type: v})}
-                        defaultValue={newProduct.type}
-                      >
-                        <SelectTrigger className="bg-black/50 border-white/10">
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-white/10 text-white">
-                          <SelectItem value="community">Community</SelectItem>
-                          <SelectItem value="software">Software</SelectItem>
-                          <SelectItem value="course">Course</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Input 
+                        placeholder="e.g. Reselling, Software, Course" 
+                        className="bg-black/50 border-white/10"
+                        value={newProduct.type === "community" ? "Paid Groups" : newProduct.type === "software" ? "Software" : newProduct.type === "course" ? "Courses" : (newProduct.tags?.[0] || "")}
+                        onChange={e => {
+                          const val = e.target.value;
+                          setNewProduct({
+                            ...newProduct, 
+                            type: "community", // default base type
+                            tags: [val] // use tags for free-form category
+                          })
+                        }}
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label>Join Link</Label>
