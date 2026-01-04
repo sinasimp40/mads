@@ -26,7 +26,11 @@ interface ProductCardProps {
 }
 
 // Components
-const PremiumCard = ({ product, onDelete }: { product: ProductCardProps, onDelete?: (id: string) => void }) => {
+const PremiumCard = ({ product, onDelete, onEdit }: { 
+  product: ProductCardProps, 
+  onDelete?: (id: string) => void,
+  onEdit?: (product: ProductCardProps) => void 
+}) => {
   const isSoftware = product.type === "software";
   const isCommunity = product.type === "community";
 
@@ -39,17 +43,30 @@ const PremiumCard = ({ product, onDelete }: { product: ProductCardProps, onDelet
       className="group relative h-full w-full overflow-hidden rounded-2xl border border-white/5 bg-card hover:border-primary/50 hover:shadow-[0_0_30px_-5px_hsl(var(--primary)/0.2)] transition-all duration-300 flex flex-col"
     >
       {onDelete && (
-        <Button 
-          variant="destructive" 
-          size="icon" 
-          className="absolute top-2 right-2 z-30 opacity-0 group-hover:opacity-100 transition-opacity w-8 h-8"
-          onClick={(e) => {
-            e.stopPropagation();
-            onDelete(product.id);
-          }}
-        >
-          <Trash2 className="w-4 h-4" />
-        </Button>
+        <div className="absolute top-2 right-2 z-30 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button 
+            variant="secondary" 
+            size="icon" 
+            className="w-8 h-8 bg-black/50 backdrop-blur-md border border-white/10 hover:bg-primary hover:text-white"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit?.(product);
+            }}
+          >
+            <Settings className="w-4 h-4" />
+          </Button>
+          <Button 
+            variant="destructive" 
+            size="icon" 
+            className="w-8 h-8 bg-red-500/80 backdrop-blur-md border border-red-500/20"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(product.id);
+            }}
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
       )}
       {/* Image Section */}
       <div className="relative aspect-[16/9] w-full overflow-hidden">
@@ -207,6 +224,7 @@ export default function PremiumCardsPage() {
   };
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [editingProduct, setEditingProduct] = useState<ProductCardProps | null>(null);
 
   // Form State
   const [newProduct, setNewProduct] = useState<Partial<ProductCardProps>>({
@@ -226,21 +244,26 @@ export default function PremiumCardsPage() {
   const handleAddProduct = () => {
     if (!newProduct.title || !newProduct.description || !newProduct.price) return;
     
-    const product: ProductCardProps = {
-      id: Math.random().toString(36).substr(2, 9),
-      title: newProduct.title as string,
-      description: newProduct.description as string,
-      price: newProduct.price as string,
-      image: newProduct.image || "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
-      tags: newProduct.tags || ["General"],
-      rating: newProduct.rating || 5,
-      reviews: newProduct.reviews || 0,
-      featured: newProduct.featured || false,
-      type: newProduct.type as any,
-      joinLink: newProduct.joinLink || "#"
-    };
+    if (editingProduct) {
+      setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...newProduct } as ProductCardProps : p));
+      setEditingProduct(null);
+    } else {
+      const product: ProductCardProps = {
+        id: Math.random().toString(36).substr(2, 9),
+        title: newProduct.title as string,
+        description: newProduct.description as string,
+        price: newProduct.price as string,
+        image: newProduct.image || "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
+        tags: newProduct.tags || ["General"],
+        rating: newProduct.rating || 5,
+        reviews: newProduct.reviews || 0,
+        featured: newProduct.featured || false,
+        type: newProduct.type as any,
+        joinLink: newProduct.joinLink || "#"
+      };
+      setProducts([product, ...products]);
+    }
 
-    setProducts([product, ...products]);
     setNewProduct({
       type: "community",
       rating: 5,
@@ -250,6 +273,11 @@ export default function PremiumCardsPage() {
       joinLink: "https://",
       price: ""
     });
+  };
+
+  const handleEdit = (product: ProductCardProps) => {
+    setNewProduct(product);
+    setEditingProduct(product);
   };
 
   const handleDelete = (id: string) => {
@@ -290,7 +318,20 @@ export default function PremiumCardsPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Dialog>
+            <Dialog open={!!editingProduct || undefined} onOpenChange={(open) => {
+              if (!open) {
+                setEditingProduct(null);
+                setNewProduct({
+                  type: "community",
+                  rating: 5,
+                  reviews: 0,
+                  tags: [],
+                  featured: false,
+                  joinLink: "https://",
+                  price: ""
+                });
+              }
+            }}>
               <DialogTrigger asChild>
                 {isAdmin && (
                   <Button size="sm" className="bg-primary hover:bg-orange-600 text-white font-bold">
@@ -300,7 +341,9 @@ export default function PremiumCardsPage() {
               </DialogTrigger>
               <DialogContent className="bg-card border-white/10 text-white max-w-2xl">
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold">Add New Premium Product</DialogTitle>
+                  <DialogTitle className="text-2xl font-bold">
+                    {editingProduct ? "Edit Product" : "Add New Premium Product"}
+                  </DialogTitle>
                 </DialogHeader>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
                   <div className="space-y-4">
@@ -382,9 +425,11 @@ export default function PremiumCardsPage() {
                 </div>
                 <div className="flex justify-end gap-3 pt-4">
                   <DialogTrigger asChild>
-                    <Button variant="ghost" className="hover:bg-white/5">Cancel</Button>
+                    <Button variant="ghost" className="hover:bg-white/5" onClick={() => setEditingProduct(null)}>Cancel</Button>
                   </DialogTrigger>
-                  <Button onClick={handleAddProduct} className="bg-primary hover:bg-orange-600 text-white px-8">Create Product</Button>
+                  <Button onClick={handleAddProduct} className="bg-primary hover:bg-orange-600 text-white px-8">
+                    {editingProduct ? "Update Product" : "Create Product"}
+                  </Button>
                 </div>
               </DialogContent>
             </Dialog>
@@ -451,6 +496,7 @@ export default function PremiumCardsPage() {
                 key={product.id} 
                 product={product} 
                 onDelete={isAdmin ? handleDelete : undefined}
+                onEdit={isAdmin ? handleEdit : undefined}
               />
             ))}
             {filteredProducts.length === 0 && (
