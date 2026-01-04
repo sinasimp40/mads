@@ -457,11 +457,6 @@ export default function PremiumCardsPage() {
             )}
           </motion.div>
         </AnimatePresence>
-      </main>
-    </div>
-  );
-}
-
 
         {/* Newsletter Section */}
         <div className="mt-24 rounded-3xl bg-gradient-to-br from-card to-background border border-white/5 p-8 md:p-12 relative overflow-hidden">
