@@ -4,13 +4,14 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import PremiumCardsPage from "@/pages/premium-cards";
+import AdminLoginPage from "@/pages/admin-login";
 import NotFound from "@/pages/not-found";
 
 function Router() {
   return (
     <Switch>
-      {/* Route to the new premium cards page as default */}
       <Route path="/" component={PremiumCardsPage} />
+      <Route path="/admin" component={AdminLoginPage} />
       <Route component={NotFound} />
     </Switch>
   );

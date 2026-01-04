@@ -199,21 +199,11 @@ export default function PremiumCardsPage() {
     return saved ? JSON.parse(saved) : INITIAL_PRODUCTS;
   });
 
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem("admin_auth") === "true");
 
-  // Hidden activation for Admin Mode (triple click logo or similar)
-  const [clickCount, setClickCount] = useState(0);
-  const handleLogoClick = () => {
-    setClickCount(prev => {
-      const newCount = prev + 1;
-      if (newCount === 3) {
-        setIsAdmin(!isAdmin);
-        return 0;
-      }
-      return newCount;
-    });
-    // Reset click count after 1 second of inactivity
-    setTimeout(() => setClickCount(0), 1000);
+  const handleLogout = () => {
+    localStorage.removeItem("admin_auth");
+    setIsAdmin(false);
   };
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
@@ -282,7 +272,7 @@ export default function PremiumCardsPage() {
       {/* Navbar */}
       <nav className="border-b border-white/5 bg-background/50 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 cursor-pointer select-none" onClick={handleLogoClick}>
+          <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold">
               W
             </div>
@@ -291,8 +281,12 @@ export default function PremiumCardsPage() {
           
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             <a href="#" className="hover:text-white transition-colors">Marketplace</a>
-            <a href="#" className="hover:text-white transition-colors">Sell</a>
-            <a href="#" className="hover:text-white transition-colors">Explore</a>
+            {isAdmin && (
+              <button onClick={handleLogout} className="text-primary hover:text-primary/80 transition-colors flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                Logout Admin
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-4">
