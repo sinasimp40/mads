@@ -161,7 +161,6 @@ export default function PremiumCardsPage() {
     localStorage.removeItem("admin_auth");
     setIsAdmin(false);
   };
-  const [activeCategory, setActiveCategory] = useState("All");
   const [editingProduct, setEditingProduct] = useState<ProductCardProps | null>(null);
 
   // Form State
@@ -222,16 +221,6 @@ export default function PremiumCardsPage() {
   const handleDelete = (id: string) => {
     setProducts(products.filter(p => p.id !== id));
   };
-
-  const filteredProducts = products.filter(p => {
-    const matchesCategory = activeCategory === "All" || 
-                           (activeCategory === "Paid Groups" && p.type === "community") ||
-                           (activeCategory === "Software" && p.type === "software") ||
-                           (activeCategory === "Courses" && p.type === "course") ||
-                           p.tags.some(t => t.toLowerCase() === activeCategory.toLowerCase()) ||
-                           p.type.toLowerCase() === activeCategory.toLowerCase();
-    return matchesCategory;
-  });
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans selection:bg-primary/30">
@@ -376,36 +365,11 @@ export default function PremiumCardsPage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-6 pb-24">
-        {/* Category Filter */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide flex-1">
-            {(() => {
-              const dynamicCategories = ["All", ...Array.from(new Set(products.flatMap(p => p.tags))).filter(Boolean)];
-              return dynamicCategories.map((filter) => (
-                <button 
-                  key={filter}
-                  onClick={() => setActiveCategory(filter)}
-                  className={cn(
-                    "px-6 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap border h-12",
-                    activeCategory === filter 
-                      ? "bg-white text-black border-white" 
-                      : "bg-white/5 text-muted-foreground border-white/5 hover:text-white hover:bg-white/10"
-                  )}
-                >
-                  {filter}
-                </button>
-              ));
-            })()}
-          </div>
-        </div>
-
         {/* Section Header */}
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-1">
-              {activeCategory === "All" ? "Featured Products" : activeCategory}
-            </h2>
-            <p className="text-muted-foreground">Showing {filteredProducts.length} results</p>
+            <h2 className="text-2xl font-bold text-white mb-1">Featured Products</h2>
+            <p className="text-muted-foreground">Showing {products.length} results</p>
           </div>
         </div>
 
@@ -415,7 +379,7 @@ export default function PremiumCardsPage() {
             layout
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           >
-            {filteredProducts.map((product) => (
+            {products.map((product) => (
               <PremiumCard 
                 key={product.id} 
                 product={product} 
@@ -423,7 +387,7 @@ export default function PremiumCardsPage() {
                 onEdit={isAdmin ? handleEdit : undefined}
               />
             ))}
-            {filteredProducts.length === 0 && (
+            {products.length === 0 && (
               <div className="col-span-full py-24 text-center">
                 <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
                   <X className="w-8 h-8 text-muted-foreground" />
