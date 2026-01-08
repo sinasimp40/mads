@@ -149,37 +149,6 @@ const PremiumCard = ({ product, onDelete, onEdit }: {
   );
 };
 
-const HeroSection = () => (
-  <div className="relative py-24 px-6 overflow-hidden">
-    {/* Background Effects */}
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary/20 blur-[120px] rounded-full pointer-events-none" />
-    
-    <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6">
-      <Badge variant="outline" className="border-primary/50 text-primary bg-primary/10 px-4 py-1.5 rounded-full mb-4">
-        <Flame className="w-4 h-4 mr-2" /> Premier Digital Marketplace
-      </Badge>
-      
-      <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white">
-        Unlock <span className="text-primary text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500">Premium</span> Access
-      </h1>
-      
-      <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-        Discover exclusive communities, powerful software, and elite courses. 
-        Join the top 1% of digital entrepreneurs today.
-      </p>
-
-      <div className="flex items-center justify-center gap-4 pt-4">
-        <Button size="lg" className="bg-primary hover:bg-orange-600 text-white font-bold px-8 h-12 rounded-full shadow-[0_0_20px_hsl(var(--primary)/0.4)]">
-          Start Exploring
-        </Button>
-        <Button size="lg" variant="ghost" className="text-white hover:bg-white/10 h-12 rounded-full">
-          Sell Your Product
-        </Button>
-      </div>
-    </div>
-  </div>
-);
-
 // Initial Mock Data (Empty for users to populate)
 const INITIAL_PRODUCTS: ProductCardProps[] = [];
 
@@ -280,7 +249,6 @@ export default function PremiumCardsPage() {
           </div>
           
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-            <a href="#" className="hover:text-white transition-colors">Marketplace</a>
             {isAdmin && (
               <button onClick={handleLogout} className="text-primary hover:text-primary/80 transition-colors flex items-center gap-2">
                 <Settings className="w-4 h-4" />
@@ -405,12 +373,9 @@ export default function PremiumCardsPage() {
                 </div>
               </DialogContent>
             </Dialog>
-            <Button size="sm" className="bg-white text-black hover:bg-gray-200 font-bold">Get Started</Button>
           </div>
         </div>
       </nav>
-
-      <HeroSection />
 
       {/* Main Content */}
       <main className="container mx-auto px-6 pb-24">
