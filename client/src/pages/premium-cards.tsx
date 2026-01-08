@@ -161,7 +161,6 @@ export default function PremiumCardsPage() {
     localStorage.removeItem("admin_auth");
     setIsAdmin(false);
   };
-  const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [editingProduct, setEditingProduct] = useState<ProductCardProps | null>(null);
 
@@ -225,15 +224,13 @@ export default function PremiumCardsPage() {
   };
 
   const filteredProducts = products.filter(p => {
-    const matchesSearch = p.title.toLowerCase().includes(search.toLowerCase()) || 
-                         p.description.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = activeCategory === "All" || 
                            (activeCategory === "Paid Groups" && p.type === "community") ||
                            (activeCategory === "Software" && p.type === "software") ||
                            (activeCategory === "Courses" && p.type === "course") ||
                            p.tags.some(t => t.toLowerCase() === activeCategory.toLowerCase()) ||
                            p.type.toLowerCase() === activeCategory.toLowerCase();
-    return matchesSearch && matchesCategory;
+    return matchesCategory;
   });
 
   return (
@@ -379,22 +376,9 @@ export default function PremiumCardsPage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-6 pb-24">
-        {/* Search & Filter */}
+        {/* Category Filter */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Input 
-              placeholder="Search products, communities, software..." 
-              className="bg-white/5 border-white/10 h-12 pl-12 rounded-xl focus:ring-primary/50 focus:border-primary/50"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-               {/* Search icon placeholder */}
-               <Users className="w-5 h-5" />
-            </div>
-          </div>
-          
-          <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide">
+          <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-hide flex-1">
             {(() => {
               const dynamicCategories = ["All", ...Array.from(new Set(products.flatMap(p => p.tags))).filter(Boolean)];
               return dynamicCategories.map((filter) => (
