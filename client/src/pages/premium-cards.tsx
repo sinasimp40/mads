@@ -364,15 +364,7 @@ export default function PremiumCardsPage() {
       </nav>
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 pb-24">
-        {/* Section Header */}
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h2 className="text-2xl font-bold text-white mb-1">Featured Products</h2>
-            <p className="text-muted-foreground">Showing {products.length} results</p>
-          </div>
-        </div>
-
+      <main className="container mx-auto px-6 py-8 pb-24">
         {/* Grid */}
         <AnimatePresence mode="popLayout">
           <motion.div 
