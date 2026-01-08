@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Check, Zap, Crown, Users, ArrowRight, ShieldCheck, Flame, Plus, Settings, X, Image as ImageIcon, Link as LinkIcon, Trash2 } from "lucide-react";
+import { Star, Check, Zap, Crown, Users, ArrowRight, ShieldCheck, Flame, Plus, Settings, X, Image as ImageIcon, Link as LinkIcon, Trash2, Lock, Clock, Headphones, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -362,6 +362,122 @@ export default function PremiumCardsPage() {
           </div>
         </div>
       </nav>
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] opacity-50" />
+        <div className="absolute top-20 right-20 w-32 h-32 bg-violet-500/20 rounded-full blur-[60px]" />
+        <div className="absolute bottom-20 left-20 w-40 h-40 bg-blue-500/15 rounded-full blur-[80px]" />
+        
+        <div className="container mx-auto px-6 pt-24 pb-20 relative z-10">
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex justify-center mb-8"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-sm text-white/80">Trusted by thousands worldwide</span>
+            </div>
+          </motion.div>
+
+          {/* Main Heading */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-center max-w-4xl mx-auto mb-8"
+          >
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+              <span className="bg-gradient-to-r from-white via-white to-white/60 bg-clip-text text-transparent">Premium </span>
+              <span className="bg-gradient-to-r from-primary via-violet-400 to-primary bg-clip-text text-transparent">Ticketmaster</span>
+              <br />
+              <span className="bg-gradient-to-r from-white/90 to-white/70 bg-clip-text text-transparent">Accounts</span>
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              Elevate your ticket purchasing experience with our aged Ticketmaster accounts. 
+              Secure, reliable, and ready for instant use.
+            </p>
+          </motion.div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
+          >
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-primary to-violet-500 hover:from-primary/90 hover:to-violet-500/90 text-white px-8 py-6 text-lg font-semibold shadow-[0_0_40px_-10px_hsl(var(--primary))] hover:shadow-[0_0_50px_-5px_hsl(var(--primary))] transition-all duration-300"
+            >
+              Explore Products
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-white/20 bg-white/5 backdrop-blur-sm hover:bg-white/10 text-white px-8 py-6 text-lg font-semibold"
+            >
+              Learn More
+            </Button>
+          </motion.div>
+
+          {/* Feature Cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+          >
+            {/* Secure Transactions */}
+            <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_-10px_hsl(var(--primary)/0.3)]">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-violet-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Lock className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">Secure Transactions</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  All purchases are processed through encrypted payment gateways
+                </p>
+              </div>
+            </div>
+
+            {/* Instant Delivery */}
+            <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_-10px_hsl(var(--primary)/0.3)]">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-violet-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Clock className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">Instant Delivery</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Receive your account credentials immediately after purchase
+                </p>
+              </div>
+            </div>
+
+            {/* 24/7 Support */}
+            <div className="group relative p-6 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-xl hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_30px_-10px_hsl(var(--primary)/0.3)]">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-violet-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Headphones className="w-6 h-6 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold text-white mb-2">24/7 Support</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Our customer service team is always available to assist you
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8 pb-24">
