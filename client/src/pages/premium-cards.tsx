@@ -627,15 +627,35 @@ export default function PremiumCardsPage() {
             {/* We Accept */}
             <div>
               <h4 className="text-white font-semibold mb-4">We Accept</h4>
-              <div className="flex gap-3 mb-4">
-                <div className="w-12 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-violet-400" viewBox="0 0 24 24" fill="currentColor">
+              <div className="flex gap-2 mb-4 flex-wrap">
+                {/* Credit Card */}
+                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center" title="Credit Card">
+                  <svg className="w-5 h-5 text-violet-400" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M22 10v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6h20zm0-2H2V6a2 2 0 012-2h16a2 2 0 012 2v2zM4 14a1 1 0 011-1h4a1 1 0 010 2H5a1 1 0 01-1-1z"/>
                   </svg>
                 </div>
-                <div className="w-12 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-violet-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                {/* Bitcoin */}
+                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center" title="Bitcoin">
+                  <svg className="w-5 h-5 text-orange-400" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12.001 2a10 10 0 110 20 10 10 0 010-20zm0 2a8 8 0 100 16 8 8 0 000-16zm.5 3v1h1.5v2h-1.5v4h1.5v2h-1.5v1h-2v-1h-1v1h-2v-1H6.001v-2h1v-4h-1v-2h1.5v-1h2v1h1v-1h2zm-2 3v4h2v-4h-2z"/>
+                  </svg>
+                </div>
+                {/* Ethereum */}
+                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center" title="Ethereum">
+                  <svg className="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 1.75l-6.25 10.5L12 16l6.25-3.75L12 1.75zM5.75 13.5L12 22.25l6.25-8.75L12 17.25l-6.25-3.75z"/>
+                  </svg>
+                </div>
+                {/* Litecoin */}
+                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center" title="Litecoin">
+                  <svg className="w-5 h-5 text-gray-300" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-4v-2l-1 .5-.5-1 1.5-.75V10h-2V8h2V6h2v2.75l1-.5.5 1-1.5.75v3.25l1-.5.5 1-1.5.75V17z"/>
+                  </svg>
+                </div>
+                {/* USDT */}
+                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center" title="USDT">
+                  <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.1 0 2 .3 2.8.8-.5.3-1.6.5-2.8.5s-2.3-.2-2.8-.5c.8-.5 1.7-.8 2.8-.8zm5 3.5c0 .3-.1.5-.2.8-.7-.3-2-.6-4.8-.6s-4.1.3-4.8.6c-.1-.3-.2-.5-.2-.8 0-1.4 2.2-2.5 5-2.5s5 1.1 5 2.5zm-5 10.5c-2.8 0-5-1.1-5-2.5v-5c1 .6 2.9 1 5 1s4-.4 5-1v5c0 1.4-2.2 2.5-5 2.5z"/>
                   </svg>
                 </div>
               </div>
