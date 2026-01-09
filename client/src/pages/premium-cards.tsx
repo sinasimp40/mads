@@ -116,7 +116,7 @@ const PremiumCard = ({ product, onDelete, onEdit }: {
           {isCommunity && <span className="text-xs text-emerald-400 flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Online</span>}
         </div>
 
-        <h3 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-primary transition-colors">
+        <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">
           {product.title}
         </h3>
         
