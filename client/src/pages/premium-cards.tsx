@@ -635,28 +635,20 @@ export default function PremiumCardsPage() {
                   </svg>
                 </div>
                 {/* Bitcoin */}
-                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center" title="Bitcoin">
-                  <svg className="w-5 h-5 text-orange-400" viewBox="0 0 32 32" fill="currentColor">
-                    <path d="M21.7 13.6c.3-2-1.2-3.1-3.3-3.8l.7-2.7-1.7-.4-.7 2.6c-.4-.1-.9-.2-1.4-.3l.7-2.6-1.7-.4-.7 2.7c-.4-.1-.7-.2-1-.2l-2.3-.6-.4 1.8s1.2.3 1.2.3c.7.2.8.6.8 1l-.8 3.2c0 0 .1 0 .2.1l-.2 0-1.1 4.5c-.1.2-.3.5-.8.4 0 0-1.2-.3-1.2-.3l-.8 1.9 2.2.6c.4.1.8.2 1.2.3l-.7 2.8 1.7.4.7-2.7c.5.1.9.2 1.4.3l-.7 2.7 1.7.4.7-2.8c2.9.5 5.1.3 6-2.3.7-2.1-.1-3.3-1.5-4.1 1.1-.3 1.9-1 2.1-2.5zm-3.8 5.3c-.5 2-4 .9-5.1.7l.9-3.7c1.1.3 4.7.8 4.2 3zm.5-5.3c-.5 1.8-3.4.9-4.3.7l.8-3.3c.9.2 4 .6 3.5 2.6z"/>
-                  </svg>
+                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden" title="Bitcoin">
+                  <img src="https://cryptologos.cc/logos/bitcoin-btc-logo.png" alt="Bitcoin" className="w-5 h-5 object-contain" />
                 </div>
                 {/* Ethereum */}
-                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center" title="Ethereum">
-                  <svg className="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 1.75l-6.25 10.5L12 16l6.25-3.75L12 1.75zM5.75 13.5L12 22.25l6.25-8.75L12 17.25l-6.25-3.75z"/>
-                  </svg>
+                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden" title="Ethereum">
+                  <img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="Ethereum" className="w-5 h-5 object-contain" />
                 </div>
                 {/* Litecoin */}
-                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center" title="Litecoin">
-                  <svg className="w-5 h-5 text-gray-300" viewBox="0 0 32 32" fill="currentColor">
-                    <path d="M10.5 22.5l1-4-2 .75-.5-1.25 2.5-1 2-8H10l.5-2h5l-1.5 6 2-.75.5 1.25-2.5 1-1 4h6l-.5 2h-8.5z"/>
-                  </svg>
+                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden" title="Litecoin">
+                  <img src="https://cryptologos.cc/logos/litecoin-ltc-logo.png" alt="Litecoin" className="w-5 h-5 object-contain" />
                 </div>
                 {/* USDT */}
-                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center" title="USDT">
-                  <svg className="w-5 h-5 text-emerald-400" viewBox="0 0 32 32" fill="currentColor">
-                    <path d="M16 6v4h8v3h-8v2.5c4.5.3 8 1.4 8 2.7s-3.5 2.4-8 2.7V26h-4v-5.1c-4.5-.3-8-1.4-8-2.7s3.5-2.4 8-2.7V13H4v-3h8V6h4zm-2 11.2c-3.9 0-7 .9-7 2s3.1 2 7 2 7-.9 7-2-3.1-2-7-2z"/>
-                  </svg>
+                <div className="w-10 h-8 rounded bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden" title="USDT">
+                  <img src="https://cryptologos.cc/logos/tether-usdt-logo.png" alt="USDT" className="w-5 h-5 object-contain" />
                 </div>
               </div>
               <p className="text-xs text-muted-foreground">
