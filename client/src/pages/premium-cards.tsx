@@ -559,7 +559,12 @@ export default function PremiumCardsPage() {
       </section>
 
       {/* Main Content */}
-      <main id="products-section" className="container mx-auto px-6 py-8 pb-24">
+      <main id="products-section" className="relative container mx-auto px-6 py-8 pb-24">
+        {/* Background Effects */}
+        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]" />
+          <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] bg-violet-500/5 rounded-full blur-[100px]" />
+        </div>
         {/* Grid */}
         <AnimatePresence mode="popLayout">
           <motion.div 
