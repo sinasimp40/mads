@@ -370,17 +370,16 @@ export default function PremiumCardsPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Category / Type</Label>
+                      <Label>Tags (comma separated)</Label>
                       <Input 
-                        placeholder="e.g. Reselling, Software, Course" 
+                        placeholder="e.g. Aged, Verified, Premium" 
                         className="bg-black/50 border-white/10"
-                        value={newProduct.type === "community" ? (newProduct.tags?.[0] || "") : newProduct.type === "software" ? "Software" : newProduct.type === "course" ? "Courses" : (newProduct.tags?.[0] || "")}
+                        value={newProduct.tags?.join(", ") || ""}
                         onChange={e => {
-                          const val = e.target.value;
+                          const tags = e.target.value.split(",").map(t => t.trim()).filter(t => t);
                           setNewProduct({
                             ...newProduct, 
-                            type: "community", 
-                            tags: [val]
+                            tags
                           })
                         }}
                       />
