@@ -27,11 +27,16 @@ export default function AdminLoginPage() {
   const [jPressCount, setJPressCount] = useState(0);
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout | null = null;
+    
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key.toLowerCase() === 'j') {
+        // Clear any existing timeout
+        if (timeoutId) clearTimeout(timeoutId);
+        
         setJPressCount(prev => {
           const newCount = prev + 1;
-          if (newCount === 5) {
+          if (newCount >= 5) {
             setShowResetModal(true);
             return 0;
           }
@@ -39,14 +44,15 @@ export default function AdminLoginPage() {
         });
         
         // Reset count if too much time passes between presses
-        setTimeout(() => setJPressCount(0), 1000);
-      } else {
-        setJPressCount(0);
+        timeoutId = setTimeout(() => setJPressCount(0), 2000);
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {

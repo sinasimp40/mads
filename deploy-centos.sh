@@ -146,6 +146,9 @@ cd $APP_DIR
 npm install
 npm run build
 
+echo -e "${YELLOW}Creating database tables...${NC}"
+npm run db:push
+
 echo -e "${YELLOW}[11/11] Configuring Nginx and starting app...${NC}"
 
 sudo tee /etc/nginx/conf.d/puretickets.conf > /dev/null <<EOF
