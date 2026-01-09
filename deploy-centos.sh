@@ -72,16 +72,23 @@ if [ ! -f "/var/lib/pgsql/data/PG_VERSION" ]; then
     sudo postgresql-setup --initdb
 fi
 
-# Configure PostgreSQL to allow password authentication
-sudo sed -i "s/ident/md5/g" /var/lib/pgsql/data/pg_hba.conf
-sudo sed -i "s/peer/md5/g" /var/lib/pgsql/data/pg_hba.conf
+# Backup original pg_hba.conf and set to trust for local connections (for setup only)
+sudo cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf.backup
+
+# Configure PostgreSQL to allow local connections without password (for initial setup)
+sudo bash -c 'cat > /var/lib/pgsql/data/pg_hba.conf << PGEOF
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+local   all             postgres                                trust
+local   all             all                                     md5
+host    all             all             127.0.0.1/32            md5
+host    all             all             ::1/128                 md5
+PGEOF'
 
 sudo systemctl enable postgresql
-sudo systemctl start postgresql
 sudo systemctl restart postgresql
 
 echo -e "${YELLOW}[6/11] Creating database...${NC}"
-# Create database user and database
+# Create database user and database (no password needed for postgres user now)
 sudo -u postgres psql -c "DROP DATABASE IF EXISTS $DB_NAME;" 2>/dev/null || true
 sudo -u postgres psql -c "DROP USER IF EXISTS $DB_USER;" 2>/dev/null || true
 sudo -u postgres psql -c "CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD';"
