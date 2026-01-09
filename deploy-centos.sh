@@ -210,6 +210,10 @@ pm2 startup
 if [ -n "$DOMAIN_NAME" ]; then
     echo -e "${YELLOW}[12/12] Setting up HTTPS with Let's Encrypt...${NC}"
     
+    # Enable EPEL repository (required for certbot on CentOS/RHEL)
+    echo -e "${YELLOW}Enabling EPEL repository...${NC}"
+    sudo $PKG_MGR install -y epel-release
+    
     # Install certbot
     sudo $PKG_MGR install -y certbot python3-certbot-nginx
     
