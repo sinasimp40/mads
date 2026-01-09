@@ -820,7 +820,7 @@ export default function PremiumCardsPage() {
                 </span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Premium Ticketmaster accounts for seamless ticket purchasing
+                Premium accounts for seamless ticket purchasing
                 experiences.
               </p>
             </div>
