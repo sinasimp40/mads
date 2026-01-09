@@ -53,6 +53,7 @@ interface ProductCardProps {
   reviews: number;
   featured?: boolean;
   type: "community" | "software" | "course";
+  category?: string;
   joinLink: string;
 }
 
@@ -324,6 +325,7 @@ export default function PremiumCardsPage() {
             reviews: newProduct.reviews || 0,
             featured: newProduct.featured || false,
             type: newProduct.type || "software",
+            category: (newProduct as any).category || "General",
             joinLink: newProduct.joinLink || "#",
           }),
         });
@@ -346,6 +348,7 @@ export default function PremiumCardsPage() {
             reviews: newProduct.reviews || 0,
             featured: newProduct.featured || false,
             type: newProduct.type || "software",
+            category: (newProduct as any).category || "General",
             joinLink: newProduct.joinLink || "#",
           }),
         });

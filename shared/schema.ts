@@ -20,6 +20,7 @@ export const products = pgTable("products", {
   reviews: integer("reviews").notNull().default(0),
   featured: boolean("featured").notNull().default(false),
   type: text("type").notNull().default("software"),
+  category: text("category").notNull().default("General"),
   joinLink: text("join_link").notNull().default("#"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

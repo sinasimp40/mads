@@ -12,6 +12,7 @@ export interface IStorage {
   createProduct(product: InsertProduct): Promise<Product>;
   updateProduct(id: string, product: UpdateProduct): Promise<Product | undefined>;
   deleteProduct(id: string): Promise<boolean>;
+  updateUserPassword(username: string, password: string): Promise<User | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -27,6 +28,15 @@ export class DatabaseStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
+  }
+
+  async updateUserPassword(username: string, password: string): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({ password })
+      .where(eq(users.username, username))
+      .returning();
     return user;
   }
 
@@ -50,6 +60,7 @@ export class DatabaseStorage implements IStorage {
       reviews: insertProduct.reviews ?? 0,
       featured: insertProduct.featured ?? false,
       type: insertProduct.type ?? "software",
+      category: insertProduct.category ?? "General",
       joinLink: insertProduct.joinLink ?? "#",
     }).returning();
     return product;

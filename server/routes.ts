@@ -8,6 +8,44 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+
+  // Admin Routes
+  app.post("/api/admin/login", async (req, res) => {
+    const { password } = req.body;
+    // For simplicity, we assume username is 'admin'
+    const user = await storage.getUserByUsername("admin");
+    
+    if (!user) {
+      // Create admin if not exists (first run)
+      if (password === "admin123") {
+        await storage.createUser({ username: "admin", password });
+        return res.json({ success: true });
+      }
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    if (user.password === password) {
+      return res.json({ success: true });
+    }
+    
+    res.status(401).json({ error: "Invalid credentials" });
+  });
+
+  app.post("/api/admin/reset-password", async (req, res) => {
+    const { newPassword } = req.body;
+    if (!newPassword) {
+      return res.status(400).json({ error: "Password required" });
+    }
+
+    let user = await storage.getUserByUsername("admin");
+    if (!user) {
+      await storage.createUser({ username: "admin", password: newPassword });
+    } else {
+      await storage.updateUserPassword("admin", newPassword);
+    }
+
+    res.json({ success: true });
+  });
   
   app.get("/api/products", async (req, res) => {
     try {

@@ -1,26 +1,105 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { Lock, ArrowRight, ShieldCheck, AlertCircle } from "lucide-react";
+import { Lock, ArrowRight, ShieldCheck, AlertCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
 
 export default function AdminLoginPage() {
   const [, setLocation] = useLocation();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  
+  // Reset Password Modal State
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [jPressCount, setJPressCount] = useState(0);
 
-  const handleLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'j') {
+        setJPressCount(prev => {
+          const newCount = prev + 1;
+          if (newCount === 5) {
+            setShowResetModal(true);
+            return 0;
+          }
+          return newCount;
+        });
+        
+        // Reset count if too much time passes between presses
+        setTimeout(() => setJPressCount(0), 1000);
+      } else {
+        setJPressCount(0);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a mockup, we'll use a hardcoded password
-    if (password === "admin123") {
-      localStorage.setItem("admin_auth", "true");
-      setLocation("/");
-    } else {
-      setError("Invalid administrative credentials");
-      setPassword("");
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        localStorage.setItem("admin_auth", "true");
+        setLocation("/");
+      } else {
+        setError(data.error || "Invalid administrative credentials");
+        setPassword("");
+      }
+    } catch (err) {
+      setError("Failed to connect to server");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!newPassword) {
+      toast.error("Password cannot be empty");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/admin/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ newPassword }),
+      });
+
+      if (res.ok) {
+        toast.success("Admin password updated successfully");
+        setShowResetModal(false);
+        setPassword(newPassword); // Pre-fill the login form
+        setNewPassword("");
+      } else {
+        toast.error("Failed to update password");
+      }
+    } catch (err) {
+      toast.error("Failed to connect to server");
     }
   };
 
@@ -53,6 +132,7 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoFocus
+                disabled={loading}
               />
             </div>
 
@@ -63,16 +143,16 @@ export default function AdminLoginPage() {
               </Alert>
             )}
 
-            <Button type="submit" className="w-full bg-primary hover:bg-orange-600 text-white h-12 font-bold text-lg rounded-xl">
-              Authorize Access
-              <ArrowRight className="w-5 h-5 ml-2" />
+            <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-orange-600 text-white h-12 font-bold text-lg rounded-xl">
+              {loading ? "Authenticating..." : "Authorize Access"}
+              {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
             </Button>
           </form>
 
           <div className="mt-8 pt-6 border-t border-white/5 text-center">
             <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <ShieldCheck className="w-4 h-4" />
-              Secure Mockup Environment
+              Secure Environment
             </div>
           </div>
         </div>
@@ -85,6 +165,36 @@ export default function AdminLoginPage() {
           Return to Marketplace
         </Button>
       </motion.div>
+
+      {/* Secret Password Reset Modal */}
+      <Dialog open={showResetModal} onOpenChange={setShowResetModal}>
+        <DialogContent className="bg-zinc-900 border-white/10 text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <RefreshCw className="w-5 h-5 text-primary" />
+              Reset Admin Password
+            </DialogTitle>
+            <DialogDescription>
+              Emergency Override: Enter a new password for the admin account.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>New Password</Label>
+              <Input 
+                type="password"
+                placeholder="Enter new password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="bg-black/50 border-white/10"
+              />
+            </div>
+            <Button onClick={handleResetPassword} className="w-full bg-primary hover:bg-primary/90">
+              Update Password
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
