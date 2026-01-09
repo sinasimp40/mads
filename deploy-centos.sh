@@ -94,15 +94,16 @@ sudo systemctl start postgresql
 # Wait for PostgreSQL to start
 sleep 2
 
-echo -e "${YELLOW}[6/11] Creating database...${NC}"
-# Run as postgres user directly without sudo password prompt
-sudo su - postgres -c "psql -c \"DROP DATABASE IF EXISTS $DB_NAME;\"" 2>/dev/null || true
+echo -e "${YELLOW}[6/11] Creating fresh database...${NC}"
+# Force disconnect all users and drop old database
+sudo su - postgres -c "psql -c \"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$DB_NAME';\"" 2>/dev/null || true
+sudo su - postgres -c "psql -c \"DROP DATABASE IF EXISTS $DB_NAME;\""
 sudo su - postgres -c "psql -c \"DROP USER IF EXISTS $DB_USER;\"" 2>/dev/null || true
 sudo su - postgres -c "psql -c \"CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD';\""
 sudo su - postgres -c "psql -c \"CREATE DATABASE $DB_NAME OWNER $DB_USER;\""
 sudo su - postgres -c "psql -c \"GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;\""
 
-echo -e "${GREEN}Database created successfully!${NC}"
+echo -e "${GREEN}Fresh database created successfully!${NC}"
 
 echo -e "${YELLOW}[7/11] Setting up application directory...${NC}"
 sudo mkdir -p $APP_DIR
