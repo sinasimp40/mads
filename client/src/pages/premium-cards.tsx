@@ -138,11 +138,6 @@ const PremiumCard = ({
               : product.price.startsWith("$")
                 ? product.price
                 : `$${product.price}`}
-            {product.price !== "Free" && (
-              <span className="text-xs text-muted-foreground font-normal ml-1">
-                /mo
-              </span>
-            )}
           </div>
         </div>
       </div>
