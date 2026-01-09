@@ -466,7 +466,7 @@ export default function PremiumCardsPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Price (Monthly)</Label>
+                      <Label>Price</Label>
                       <Input
                         placeholder="e.g. 99.00"
                         className="bg-black/50 border-white/10"
