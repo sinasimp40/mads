@@ -559,12 +559,14 @@ export default function PremiumCardsPage() {
       </section>
 
       {/* Main Content */}
-      <main id="products-section" className="relative container mx-auto px-6 py-8 pb-24">
+      <section className="relative bg-gradient-to-b from-background via-background to-black/50">
         {/* Background Effects */}
-        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px]" />
-          <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] bg-violet-500/5 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px]" />
+          <div className="absolute bottom-20 right-1/4 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-[120px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]" />
         </div>
+        <main id="products-section" className="relative container mx-auto px-6 py-16 pb-24">
         {/* Grid */}
         <AnimatePresence mode="popLayout">
           <motion.div 
@@ -592,6 +594,7 @@ export default function PremiumCardsPage() {
         </AnimatePresence>
 
       </main>
+      </section>
 
       {/* Footer */}
       <footer id="footer-section" className="border-t border-white/5 bg-black/40">
