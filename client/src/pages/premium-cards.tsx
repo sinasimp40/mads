@@ -183,12 +183,32 @@ export default function PremiumCardsPage() {
   useEffect(() => {
     fetchProducts();
     
-    // Auto-refresh every 3 seconds to sync across devices
-    const interval = setInterval(() => {
-      fetchProducts();
-    }, 3000);
+    // WebSocket for instant real-time updates
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
     
-    return () => clearInterval(interval);
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      
+      if (message.type === "product_added") {
+        setProducts(prev => [message.data, ...prev]);
+      } else if (message.type === "product_updated") {
+        setProducts(prev => prev.map(p => 
+          p.id === message.data.id ? message.data : p
+        ));
+      } else if (message.type === "product_deleted") {
+        setProducts(prev => prev.filter(p => p.id !== message.data.id));
+      }
+    };
+    
+    ws.onclose = () => {
+      // Reconnect after 2 seconds if connection lost
+      setTimeout(() => {
+        fetchProducts();
+      }, 2000);
+    };
+    
+    return () => ws.close();
   }, []);
 
   useEffect(() => {

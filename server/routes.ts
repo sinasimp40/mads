@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertProductSchema, updateProductSchema } from "@shared/schema";
+import { broadcastUpdate } from "./index";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -36,6 +37,10 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Invalid product data", details: parsed.error });
       }
       const product = await storage.createProduct(parsed.data);
+      
+      // Broadcast to all clients instantly
+      broadcastUpdate("product_added", product);
+      
       res.status(201).json(product);
     } catch (error) {
       res.status(500).json({ error: "Failed to create product" });
@@ -52,6 +57,10 @@ export async function registerRoutes(
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
+      
+      // Broadcast to all clients instantly
+      broadcastUpdate("product_updated", product);
+      
       res.json(product);
     } catch (error) {
       res.status(500).json({ error: "Failed to update product" });
@@ -64,6 +73,10 @@ export async function registerRoutes(
       if (!deleted) {
         return res.status(404).json({ error: "Product not found" });
       }
+      
+      // Broadcast to all clients instantly
+      broadcastUpdate("product_deleted", { id: req.params.id });
+      
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete product" });
