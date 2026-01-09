@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Star,
+  StarHalf,
   Check,
   Zap,
   Crown,
@@ -151,17 +152,26 @@ const PremiumCard = ({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1">
             <div className="flex text-primary">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={cn(
-                    "w-3.5 h-3.5",
-                    i < Math.floor(product.rating)
-                      ? "fill-primary"
-                      : "text-muted opacity-30",
-                  )}
-                />
-              ))}
+              {[...Array(5)].map((_, i) => {
+                const rating = product.rating || 0;
+                const fullStars = Math.floor(rating);
+                const hasHalfStar = rating - fullStars >= 0.5;
+                
+                if (i < fullStars) {
+                  return <Star key={i} className="w-3.5 h-3.5 fill-primary" />;
+                } else if (i === fullStars && hasHalfStar) {
+                  return (
+                    <div key={i} className="relative w-3.5 h-3.5">
+                      <Star className="w-3.5 h-3.5 text-muted opacity-30 absolute" />
+                      <div className="overflow-hidden w-[50%] absolute">
+                        <Star className="w-3.5 h-3.5 fill-primary" />
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return <Star key={i} className="w-3.5 h-3.5 text-muted opacity-30" />;
+                }
+              })}
             </div>
             <span className="text-xs text-muted-foreground">
               ({product.rating?.toFixed(1) || "0.0"})

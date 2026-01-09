@@ -57,7 +57,6 @@ export class DatabaseStorage implements IStorage {
       image: insertProduct.image,
       tags: insertProduct.tags ?? [],
       rating: insertProduct.rating ?? 5,
-      reviews: insertProduct.reviews ?? 0,
       featured: insertProduct.featured ?? false,
       type: insertProduct.type ?? "software",
       category: insertProduct.category ?? "General",

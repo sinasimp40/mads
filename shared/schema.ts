@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, boolean, integer, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, boolean, integer, timestamp, real } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -16,8 +16,7 @@ export const products = pgTable("products", {
   price: text("price").notNull(),
   image: text("image").notNull(),
   tags: text("tags").array().notNull().default(sql`ARRAY[]::text[]`),
-  rating: integer("rating").notNull().default(5),
-  reviews: integer("reviews").notNull().default(0),
+  rating: real("rating").notNull().default(5),
   featured: boolean("featured").notNull().default(false),
   type: text("type").notNull().default("software"),
   category: text("category").notNull().default("General"),
