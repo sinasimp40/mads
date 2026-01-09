@@ -28,6 +28,12 @@ if [ ! -f "package.json" ]; then
     exit 1
 fi
 
+# Ask for domain name
+echo ""
+echo -e "${YELLOW}Enter your domain name (e.g., puretickets.com):${NC}"
+echo -e "(Leave empty to skip HTTPS setup)"
+read -p "Domain: " DOMAIN_NAME
+
 APP_DIR="/var/www/puretickets"
 NODE_VERSION="20"
 PORT=3000
@@ -46,10 +52,10 @@ else
     PKG_MGR="yum"
 fi
 
-echo -e "${YELLOW}[1/11] Updating system packages...${NC}"
+echo -e "${YELLOW}[1/12] Updating system packages...${NC}"
 sudo $PKG_MGR update -y
 
-echo -e "${YELLOW}[2/11] Installing Node.js ${NODE_VERSION}...${NC}"
+echo -e "${YELLOW}[2/12] Installing Node.js ${NODE_VERSION}...${NC}"
 if ! command -v node &> /dev/null; then
     curl -fsSL https://rpm.nodesource.com/setup_${NODE_VERSION}.x | sudo bash -
     sudo $PKG_MGR install -y nodejs
@@ -57,15 +63,15 @@ else
     echo "Node.js already installed: $(node -v)"
 fi
 
-echo -e "${YELLOW}[3/11] Installing PM2 process manager...${NC}"
+echo -e "${YELLOW}[3/12] Installing PM2 process manager...${NC}"
 sudo npm install -g pm2
 
-echo -e "${YELLOW}[4/11] Installing Nginx...${NC}"
+echo -e "${YELLOW}[4/12] Installing Nginx...${NC}"
 sudo $PKG_MGR install -y nginx
 sudo systemctl enable nginx
 sudo systemctl start nginx
 
-echo -e "${YELLOW}[5/11] Installing PostgreSQL...${NC}"
+echo -e "${YELLOW}[5/12] Installing PostgreSQL...${NC}"
 sudo $PKG_MGR install -y postgresql-server postgresql
 
 # Initialize PostgreSQL if not already done
@@ -95,7 +101,7 @@ sudo systemctl start postgresql
 # Wait for PostgreSQL to start
 sleep 2
 
-echo -e "${YELLOW}[6/11] Creating fresh database...${NC}"
+echo -e "${YELLOW}[6/12] Creating fresh database...${NC}"
 # Force disconnect all users and drop old database
 sudo su - postgres -c "psql -c \"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$DB_NAME';\"" 2>/dev/null || true
 sudo su - postgres -c "psql -c \"DROP DATABASE IF EXISTS $DB_NAME;\""
@@ -106,15 +112,15 @@ sudo su - postgres -c "psql -c \"GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $D
 
 echo -e "${GREEN}Fresh database created successfully!${NC}"
 
-echo -e "${YELLOW}[7/11] Setting up application directory...${NC}"
+echo -e "${YELLOW}[7/12] Setting up application directory...${NC}"
 sudo mkdir -p $APP_DIR
 
-echo -e "${YELLOW}[8/11] Copying files to $APP_DIR...${NC}"
+echo -e "${YELLOW}[8/12] Copying files to $APP_DIR...${NC}"
 sudo rm -rf $APP_DIR/* 2>/dev/null || true
 sudo cp -r "$CURRENT_DIR"/* $APP_DIR/
 sudo chown -R $USER:$USER $APP_DIR
 
-echo -e "${YELLOW}[9/11] Configuring environment...${NC}"
+echo -e "${YELLOW}[9/12] Configuring environment...${NC}"
 # Create .env file
 cat > $APP_DIR/.env << ENVEOF
 DATABASE_URL=${DATABASE_URL}
@@ -141,7 +147,7 @@ ECOEOF
 
 echo -e "${GREEN}Environment configured!${NC}"
 
-echo -e "${YELLOW}[10/11] Installing dependencies and building...${NC}"
+echo -e "${YELLOW}[10/12] Installing dependencies and building...${NC}"
 cd $APP_DIR
 npm install
 npm run build
@@ -149,12 +155,19 @@ npm run build
 echo -e "${YELLOW}Creating database tables...${NC}"
 npm run db:push
 
-echo -e "${YELLOW}[11/11] Configuring Nginx and starting app...${NC}"
+echo -e "${YELLOW}[11/12] Configuring Nginx...${NC}"
+
+# Use domain name if provided, otherwise use _ for any host
+if [ -n "$DOMAIN_NAME" ]; then
+    SERVER_NAME="$DOMAIN_NAME"
+else
+    SERVER_NAME="_"
+fi
 
 sudo tee /etc/nginx/conf.d/puretickets.conf > /dev/null <<EOF
 server {
     listen 80;
-    server_name _;
+    server_name ${SERVER_NAME};
 
     location / {
         proxy_pass http://localhost:${PORT};
@@ -193,12 +206,39 @@ pm2 start ecosystem.config.cjs
 pm2 save
 pm2 startup
 
+# Setup HTTPS if domain was provided
+if [ -n "$DOMAIN_NAME" ]; then
+    echo -e "${YELLOW}[12/12] Setting up HTTPS with Let's Encrypt...${NC}"
+    
+    # Install certbot
+    sudo $PKG_MGR install -y certbot python3-certbot-nginx
+    
+    # Get SSL certificate (non-interactive)
+    echo -e "${YELLOW}Obtaining SSL certificate for ${DOMAIN_NAME}...${NC}"
+    sudo certbot --nginx -d "$DOMAIN_NAME" --non-interactive --agree-tos --register-unsafely-without-email --redirect
+    
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}HTTPS enabled successfully!${NC}"
+        
+        # Setup auto-renewal
+        echo "0 12 * * * /usr/bin/certbot renew --quiet" | sudo tee /etc/cron.d/certbot-renew > /dev/null
+        
+        SITE_URL="https://${DOMAIN_NAME}"
+    else
+        echo -e "${RED}Failed to obtain SSL certificate. Site is available via HTTP.${NC}"
+        SITE_URL="http://${DOMAIN_NAME}"
+    fi
+else
+    echo -e "${YELLOW}[12/12] Skipping HTTPS (no domain provided)...${NC}"
+    SITE_URL="http://YOUR_SERVER_IP"
+fi
+
 echo ""
 echo -e "${GREEN}=========================================="
 echo "  PureTickets Deployment Complete!"
 echo "==========================================${NC}"
 echo ""
-echo "Your app is now running at: http://YOUR_SERVER_IP"
+echo -e "Your app is now running at: ${GREEN}${SITE_URL}${NC}"
 echo ""
 echo -e "${YELLOW}Database credentials (save these!):${NC}"
 echo "  Database: $DB_NAME"
@@ -206,10 +246,10 @@ echo "  User: $DB_USER"
 echo "  Password: $DB_PASSWORD"
 echo "  Connection: $DATABASE_URL"
 echo ""
-echo -e "${YELLOW}To enable HTTPS with Let's Encrypt:${NC}"
-echo "  sudo $PKG_MGR install -y certbot python3-certbot-nginx"
-echo "  sudo certbot --nginx -d yourdomain.com"
-echo ""
+if [ -n "$DOMAIN_NAME" ]; then
+    echo -e "${GREEN}HTTPS is enabled with auto-renewal!${NC}"
+    echo ""
+fi
 echo -e "${YELLOW}Useful PM2 commands:${NC}"
 echo "  pm2 logs puretickets  - View app logs"
 echo "  pm2 restart puretickets - Restart app"
