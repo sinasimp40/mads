@@ -374,13 +374,13 @@ export default function PremiumCardsPage() {
                       <Input 
                         placeholder="e.g. Aged, Verified, Premium" 
                         className="bg-black/50 border-white/10"
-                        value={newProduct.tags?.join(", ") || ""}
+                        value={(newProduct as any).tagsInput ?? newProduct.tags?.join(", ") ?? ""}
                         onChange={e => {
-                          const tags = e.target.value.split(",").map(t => t.trim()).filter(t => t);
                           setNewProduct({
                             ...newProduct, 
-                            tags
-                          })
+                            tagsInput: e.target.value,
+                            tags: e.target.value.split(",").map(t => t.trim()).filter(t => t)
+                          } as any)
                         }}
                       />
                     </div>
