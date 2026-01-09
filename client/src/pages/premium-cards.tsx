@@ -179,6 +179,14 @@ const PremiumCard = ({
           {product.title}
         </h3>
 
+        {product.category && (
+          <div className="mb-2">
+            <span className="text-xs px-2 py-1 rounded-full bg-primary/20 text-primary border border-primary/30">
+              {product.category}
+            </span>
+          </div>
+        )}
+
         <p className="text-sm text-muted-foreground mb-4 flex-grow whitespace-pre-line">
           {product.description}
         </p>
