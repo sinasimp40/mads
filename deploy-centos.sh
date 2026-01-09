@@ -37,6 +37,7 @@ CURRENT_DIR=$(pwd)
 DB_PASSWORD=$(openssl rand -base64 12 | tr -dc 'a-zA-Z0-9' | head -c 16)
 DB_NAME="puretickets"
 DB_USER="puretickets"
+DATABASE_URL="postgres://${DB_USER}:${DB_PASSWORD}@localhost:5432/${DB_NAME}"
 
 # Detect package manager (dnf for newer, yum for older)
 if command -v dnf &> /dev/null; then
@@ -109,16 +110,36 @@ echo -e "${YELLOW}[7/11] Setting up application directory...${NC}"
 sudo mkdir -p $APP_DIR
 
 echo -e "${YELLOW}[8/11] Copying files to $APP_DIR...${NC}"
+sudo rm -rf $APP_DIR/* 2>/dev/null || true
 sudo cp -r "$CURRENT_DIR"/* $APP_DIR/
 sudo chown -R $USER:$USER $APP_DIR
 
-# Create .env file with database connection
 echo -e "${YELLOW}[9/11] Configuring environment...${NC}"
-cat > $APP_DIR/.env << EOF
-DATABASE_URL=postgres://$DB_USER:$DB_PASSWORD@localhost:5432/$DB_NAME
+# Create .env file
+cat > $APP_DIR/.env << ENVEOF
+DATABASE_URL=${DATABASE_URL}
 NODE_ENV=production
-PORT=$PORT
-EOF
+PORT=${PORT}
+ENVEOF
+
+# Create PM2 ecosystem file with environment variables baked in
+cat > $APP_DIR/ecosystem.config.js << ECOEOF
+module.exports = {
+  apps: [{
+    name: 'puretickets',
+    script: 'npm',
+    args: 'start',
+    cwd: '${APP_DIR}',
+    env: {
+      NODE_ENV: 'production',
+      PORT: ${PORT},
+      DATABASE_URL: '${DATABASE_URL}'
+    }
+  }]
+};
+ECOEOF
+
+echo -e "${GREEN}Environment configured!${NC}"
 
 echo -e "${YELLOW}[10/11] Installing dependencies and building...${NC}"
 cd $APP_DIR
@@ -162,23 +183,6 @@ fi
 
 sudo nginx -t && sudo systemctl restart nginx
 
-# Create PM2 ecosystem file with environment variables
-cat > $APP_DIR/ecosystem.config.js << PMEOF
-module.exports = {
-  apps: [{
-    name: 'puretickets',
-    script: 'npm',
-    args: 'start',
-    cwd: '$APP_DIR',
-    env: {
-      NODE_ENV: 'production',
-      PORT: $PORT,
-      DATABASE_URL: 'postgres://$DB_USER:$DB_PASSWORD@localhost:5432/$DB_NAME'
-    }
-  }]
-};
-PMEOF
-
 # Start with PM2 using ecosystem file
 cd $APP_DIR
 pm2 delete puretickets 2>/dev/null || true
@@ -197,7 +201,7 @@ echo -e "${YELLOW}Database credentials (save these!):${NC}"
 echo "  Database: $DB_NAME"
 echo "  User: $DB_USER"
 echo "  Password: $DB_PASSWORD"
-echo "  Connection: postgres://$DB_USER:$DB_PASSWORD@localhost:5432/$DB_NAME"
+echo "  Connection: $DATABASE_URL"
 echo ""
 echo -e "${YELLOW}To enable HTTPS with Let's Encrypt:${NC}"
 echo "  sudo $PKG_MGR install -y certbot python3-certbot-nginx"
