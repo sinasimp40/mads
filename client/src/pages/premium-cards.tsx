@@ -153,9 +153,18 @@ const PremiumCard = ({ product, onDelete, onEdit }: {
 const INITIAL_PRODUCTS: ProductCardProps[] = [];
 
 export default function PremiumCardsPage() {
-  const [products, setProducts] = useState<ProductCardProps[]>(() => []);
+  // Load products from localStorage on mount
+  const [products, setProducts] = useState<ProductCardProps[]>(() => {
+    try {
+      const stored = localStorage.getItem("premium_products");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
 
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem("admin_auth") === "true");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("admin_auth");
@@ -174,18 +183,39 @@ export default function PremiumCardsPage() {
     price: ""
   });
 
+  // Save products to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem("premium_products", JSON.stringify(products));
+  }, [products]);
+
+  useEffect(() => {
     if (isAdmin) localStorage.setItem("admin_auth", "true");
-  }, [products, isAdmin]);
+  }, [isAdmin]);
+
+  const resetForm = () => {
+    setNewProduct({
+      type: "community",
+      rating: 5,
+      reviews: 0,
+      tags: [],
+      featured: false,
+      joinLink: "https://",
+      price: ""
+    });
+    setEditingProduct(null);
+    setDialogOpen(false);
+  };
 
   const handleAddProduct = () => {
     if (!newProduct.title || !newProduct.description) return;
     
     if (editingProduct) {
-      setProducts(products.map(p => p.id === editingProduct.id ? { ...p, ...newProduct } as ProductCardProps : p));
-      setEditingProduct(null);
+      // Update existing product - creates new array reference for React to detect change
+      setProducts(prev => prev.map(p => 
+        p.id === editingProduct.id ? { ...p, ...newProduct } as ProductCardProps : p
+      ));
     } else {
+      // Add new product
       const product: ProductCardProps = {
         id: Math.random().toString(36).substr(2, 9),
         title: newProduct.title as string,
@@ -199,27 +229,21 @@ export default function PremiumCardsPage() {
         type: newProduct.type as any,
         joinLink: newProduct.joinLink || "#"
       };
-      setProducts([product, ...products]);
+      setProducts(prev => [product, ...prev]);
     }
 
-    setNewProduct({
-      type: "community",
-      rating: 5,
-      reviews: 0,
-      tags: [],
-      featured: false,
-      joinLink: "https://",
-      price: ""
-    });
+    // Close dialog and reset form immediately
+    resetForm();
   };
 
   const handleEdit = (product: ProductCardProps) => {
     setNewProduct(product);
     setEditingProduct(product);
+    setDialogOpen(true);
   };
 
   const handleDelete = (id: string) => {
-    setProducts(products.filter(p => p.id !== id));
+    setProducts(prev => prev.filter(p => p.id !== id));
   };
 
   return (
@@ -244,23 +268,20 @@ export default function PremiumCardsPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Dialog open={!!editingProduct || undefined} onOpenChange={(open) => {
+            <Dialog open={dialogOpen} onOpenChange={(open) => {
               if (!open) {
-                setEditingProduct(null);
-                setNewProduct({
-                  type: "community",
-                  rating: 5,
-                  reviews: 0,
-                  tags: [],
-                  featured: false,
-                  joinLink: "https://",
-                  price: ""
-                });
+                resetForm();
+              } else {
+                setDialogOpen(true);
               }
             }}>
               <DialogTrigger asChild>
                 {isAdmin && (
-                  <Button size="sm" className="bg-primary hover:bg-orange-600 text-white font-bold">
+                  <Button 
+                    size="sm" 
+                    className="bg-primary hover:bg-orange-600 text-white font-bold"
+                    onClick={() => setDialogOpen(true)}
+                  >
                     <Plus className="w-4 h-4 mr-1" /> Add Product
                   </Button>
                 )}
