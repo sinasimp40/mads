@@ -490,8 +490,9 @@ export default function PremiumCardsPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>Category</Label>
-                      <select
-                        className="w-full h-10 px-3 rounded-md bg-black/50 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                      <Input
+                        placeholder="e.g. Aged Accounts, Premium, VIP"
+                        className="bg-black/50 border-white/10"
                         value={(newProduct as any).category || ""}
                         onChange={(e) =>
                           setNewProduct({
@@ -499,32 +500,7 @@ export default function PremiumCardsPage() {
                             category: e.target.value,
                           } as any)
                         }
-                      >
-                        <option value="" className="bg-zinc-900">
-                          Select category...
-                        </option>
-                        <option value="Aged Accounts" className="bg-zinc-900">
-                          Aged Accounts
-                        </option>
-                        <option
-                          value="Verified Accounts"
-                          className="bg-zinc-900"
-                        >
-                          Verified Accounts
-                        </option>
-                        <option
-                          value="Premium Accounts"
-                          className="bg-zinc-900"
-                        >
-                          Premium Accounts
-                        </option>
-                        <option value="Bulk Accounts" className="bg-zinc-900">
-                          Bulk Accounts
-                        </option>
-                        <option value="Special Offers" className="bg-zinc-900">
-                          Special Offers
-                        </option>
-                      </select>
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label>Join Link</Label>
