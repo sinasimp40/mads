@@ -72,10 +72,11 @@ if [ ! -f "/var/lib/pgsql/data/PG_VERSION" ]; then
     sudo postgresql-setup --initdb
 fi
 
-# Backup original pg_hba.conf and set to trust for local connections (for setup only)
-sudo cp /var/lib/pgsql/data/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf.backup
+# Stop PostgreSQL to modify config
+sudo systemctl stop postgresql 2>/dev/null || true
 
-# Configure PostgreSQL to allow local connections without password (for initial setup)
+# ALWAYS update pg_hba.conf to allow trust for local postgres user
+echo -e "${YELLOW}Configuring PostgreSQL authentication...${NC}"
 sudo bash -c 'cat > /var/lib/pgsql/data/pg_hba.conf << PGEOF
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 local   all             postgres                                trust
@@ -84,16 +85,24 @@ host    all             all             127.0.0.1/32            md5
 host    all             all             ::1/128                 md5
 PGEOF'
 
+sudo chown postgres:postgres /var/lib/pgsql/data/pg_hba.conf
+sudo chmod 600 /var/lib/pgsql/data/pg_hba.conf
+
 sudo systemctl enable postgresql
-sudo systemctl restart postgresql
+sudo systemctl start postgresql
+
+# Wait for PostgreSQL to start
+sleep 2
 
 echo -e "${YELLOW}[6/11] Creating database...${NC}"
-# Create database user and database (no password needed for postgres user now)
-sudo -u postgres psql -c "DROP DATABASE IF EXISTS $DB_NAME;" 2>/dev/null || true
-sudo -u postgres psql -c "DROP USER IF EXISTS $DB_USER;" 2>/dev/null || true
-sudo -u postgres psql -c "CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD';"
-sudo -u postgres psql -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;"
+# Run as postgres user directly without sudo password prompt
+sudo su - postgres -c "psql -c \"DROP DATABASE IF EXISTS $DB_NAME;\"" 2>/dev/null || true
+sudo su - postgres -c "psql -c \"DROP USER IF EXISTS $DB_USER;\"" 2>/dev/null || true
+sudo su - postgres -c "psql -c \"CREATE USER $DB_USER WITH PASSWORD '$DB_PASSWORD';\""
+sudo su - postgres -c "psql -c \"CREATE DATABASE $DB_NAME OWNER $DB_USER;\""
+sudo su - postgres -c "psql -c \"GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;\""
+
+echo -e "${GREEN}Database created successfully!${NC}"
 
 echo -e "${YELLOW}[7/11] Setting up application directory...${NC}"
 sudo mkdir -p $APP_DIR
