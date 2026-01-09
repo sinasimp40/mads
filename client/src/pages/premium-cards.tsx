@@ -120,7 +120,7 @@ const PremiumCard = ({ product, onDelete, onEdit }: {
           {product.title}
         </h3>
         
-        <p className="text-sm text-muted-foreground mb-4 line-clamp-2 flex-grow">
+        <p className="text-sm text-muted-foreground mb-4 flex-grow">
           {product.description}
         </p>
 
