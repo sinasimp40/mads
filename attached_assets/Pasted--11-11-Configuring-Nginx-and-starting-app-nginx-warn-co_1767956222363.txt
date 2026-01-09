@@ -1,0 +1,161 @@
+[11/11] Configuring Nginx and starting app...
+nginx: [warn] conflicting server name "_" on 0.0.0.0:80, ignored
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+[PM2] Applying action deleteProcessId on app [puretickets](ids: [ 0 ])
+[PM2] [puretickets](0) ✓
+┌────┬───────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name      │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+└────┴───────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Starting /usr/bin/npm in fork_mode (1 instance)
+[PM2] Done.
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ puretickets    │ default     │ N/A     │ fork    │ 24175    │ 0s     │ 0    │ online    │ 0%       │ 12.5mb   │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[PM2] Saving current process list...
+[PM2] Successfully saved in /root/.pm2/dump.pm2
+[PM2] Init System found: systemd
+Platform systemd
+Template
+[Unit]
+Description=PM2 process manager
+Documentation=https://pm2.keymetrics.io/
+After=network.target
+
+[Service]
+Type=forking
+User=root
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+Environment=PATH=/root/.local/bin:/root/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+Environment=PM2_HOME=/root/.pm2
+PIDFile=/root/.pm2/pm2.pid
+Restart=on-failure
+
+ExecStart=/usr/lib/node_modules/pm2/bin/pm2 resurrect
+ExecReload=/usr/lib/node_modules/pm2/bin/pm2 reload all
+ExecStop=/usr/lib/node_modules/pm2/bin/pm2 kill
+
+[Install]
+WantedBy=multi-user.target
+
+Target path
+/etc/systemd/system/pm2-root.service
+Command list
+[ 'systemctl enable pm2-root' ]
+[PM2] Writing init configuration in /etc/systemd/system/pm2-root.service
+[PM2] Making script booting at startup...
+[PM2] [-] Executing: systemctl enable pm2-root...
+[PM2] [v] Command successfully executed.
++---------------------------------------+
+[PM2] Freeze a process list on reboot via:
+$ pm2 save
+
+[PM2] Remove init script via:
+$ pm2 unstartup systemd
+
+==========================================
+  PureTickets Deployment Complete!
+==========================================\033[0m
+
+Your app is now running at: http://YOUR_SERVER_IP
+
+Database credentials (save these!):
+  Database: puretickets
+  User: puretickets
+  Password: f7ZTRsbH8G5lTis1
+  Connection: postgres://puretickets:f7ZTRsbH8G5lTis1@localhost:5432/puretickets
+
+To enable HTTPS with Let's Encrypt:
+  sudo dnf install -y certbot python3-certbot-nginx
+  sudo certbot --nginx -d yourdomain.com
+
+Useful PM2 commands:
+  pm2 logs puretickets  - View app logs
+  pm2 restart puretickets - Restart app
+  pm2 status   - Check app status
+
+[root@srv1258142 mads]# # Check if PM2 app is running
+pm2 status
+
+# Check app logs for errors
+pm2 logs puretickets --lines 50
+
+# Check if port 3000 is being used
+netstat -tlnp | grep 3000
+┌────┬────────────────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name           │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼────────────────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ puretickets    │ default     │ N/A     │ fork    │ 0        │ 0      │ 15   │ errored   │ 0%       │ 0b       │ root     │ disabled │
+└────┴────────────────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[TAILING] Tailing last 50 lines for [puretickets] process (change the value with --lines option)
+/root/.pm2/logs/puretickets-out.log last 50 lines:
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+0|puretick |
+0|puretick | > rest-express@1.0.0 start
+0|puretick | > NODE_ENV=production node dist/index.cjs
+0|puretick |
+
+/root/.pm2/logs/puretickets-error.log last 50 lines:
+0|puretick | .params=n,this.logger=i,this.fields=a,this._isResponseInArrayMode=o,this.customResultMapper=u,this.rawQueryConfig={name:s,text:r,types:{getTypeParser:(c,l)=>c===Ft.builtins.TIMESTAMPTZ?p=>p:c===Ft.builtins.TIMESTAMP?p=>p:c===Ft.builtins.DATE?p=>p:c===Ft.builtins.INTERVAL?p=>p:Ft.getTypeParser(c,l)}},this.queryConfig={name:s,text:r,rowMode:"array",types:{getTypeParser:(c,l)=>c===Ft.builtins.TIMESTAMPTZ?p=>p:c===Ft.builtins.TIMESTAMP?p=>p:c===Ft.builtins.DATE?p=>p:c===Ft.builtins.INTERVAL?p=>p:Ft.getTypeParser(c,l)}}}static[m]="NodePgPreparedQuery";rawQueryConfig;queryConfig;async execute(e={}){return te.startActiveSpan("drizzle.execute",async()=>{let r=ep(this.params,e);this.logger.logQuery(this.rawQueryConfig.text,r);let{fields:n,rawQueryConfig:i,client:a,queryConfig:s,joinsNotNullableMap:o,customResultMapper:u}=this;if(!n&&!u)return te.startActiveSpan("drizzle.driver.execute",async l=>(l?.setAttributes({"drizzle.query.name":i.name,"drizzle.query.text":i.text,"drizzle.query.params":JSON.stringify(r)}),a.query(i,r)));let c=await te.startActiveSpan("drizzle.driver.execute",l=>(l?.setAttributes({"drizzle.query.name":s.name,"drizzle.query.text":s.text,"drizzle.query.params":JSON.stringify(r)}),a.query(s,r)));return te.startActiveSpan("drizzle.mapResponse",()=>u?u(c.rows):c.rows.map(l=>v1(n,l,o)))})}all(e={}){return te.startActiveSpan("drizzle.execute",()=>{let r=ep(this.params,e);return this.logger.logQuery(this.rawQueryConfig.text,r),te.startActiveSpan("drizzle.driver.execute",n=>(n?.setAttributes({"drizzle.query.name":this.rawQueryConfig.name,"drizzle.query.text":this.rawQueryConfig.text,"drizzle.query.params":JSON.stringify(r)}),this.client.query(this.rawQueryConfig,r).then(i=>i.rows)))})}isResponseInArrayMode(){return this._isResponseInArrayMode}},pc=class t extends zo{constructor(e,r,n,i={}){super(r),this.client=e,this.schema=n,this.options=i,this.logger=i.logger??new So}static[m]="NodePgSession";logger;prepareQuery(e,r,n,i,a){return new Rf(this.client,e.sql,e.params,this.logger,r,n,i,a)}async transaction(e,r){let n=this.client instanceof rS?new t(await this.client.connect(),this.dialect,this.schema,this.options):this,i=new Lf(this.dialect,n,this.schema);await i.execute(h`begin${r?h` ${i.getTransactionConfigSQL(r)}`:void 0}`);try{let a=await e(i);return await i.execute(h`commit`),a}catch(a){throw await i.execute(h`rollback`),a}finally{this.client instanceof rS&&n.client.release()}}async count(e){let r=await this.execute(e);return Number(r.rows[0].count)}},Lf=class t extends Uo{static[m]="NodePgTransaction";async transaction(e){let r=`sp${this.nestedIndex+1}`,n=new t(this.dialect,this.session,this.schema,this.nestedIndex+1);await n.execute(h.raw(`savepoint ${r}`));try{let i=await e(n);return await n.execute(h.raw(`release savepoint ${r}`)),i}catch(i){throw await n.execute(h.raw(`rollback to savepoint ${r}`)),i}}};var Df=class{constructor(e,r,n={}){this.client=e,this.dialect=r,this.options=n}static[m]="NodePgDriver";createSession(e){return new pc(this.client,this.dialect,e,{logger:this.options.logger})}},Bf=class extends Jn{static[m]="NodePgDatabase"};function Ga(t,e={}){let r=new hr({casing:e.casing}),n;e.logger===!0?n=new _o:e.logger!==!1&&(n=e.logger);let i;if(e.schema){let u=J1(e.schema,ew);i={fullSchema:e.schema,schema:u.tables,tableNamesMap:u.tableNamesMap}}let s=new Df(t,r,{logger:n}).createSession(i),o=new Bf(r,s,i);return o.$client=t,o}function dc(...t){if(typeof t[0]=="string"){let e=new Sr.Pool({connectionString:t[0]});return Ga(e,t[1])}if(x1(t[0])){let{connection:e,client:r,...n}=t[0];if(r)return Ga(r,n);let i=typeof e=="string"?new Sr.Pool({connectionString:e}):new Sr.Pool(e);return Ga(i,n)}return Ga(t[0],t[1])}(t=>{function e(r){return Ga({},r)}t.mock=e})(dc||(dc={}));var{Pool:iI}=Sr;if(!process.env.DATABASE_URL)throw new Error("DATABASE_URL environment variable is not set");var aI=new iI({connectionString:process.env.DATABASE_URL}),$t=dc(aI,{schema:Od});var Mf=class{async getUser(e){let[r]=await $t.select().from(Mt).where(_t(Mt.id,e));return r}async getUserByUsername(e){let[r]=await $t.select().from(Mt).where(_t(Mt.username,e));return r}async createUser(e){let[r]=await $t.insert(Mt).values(e).returning();return r}async updateUserPassword(e,r){let[n]=await $t.update(Mt).set({password:r}).where(_t(Mt.username,e)).returning();return n}async getAllProducts(){return await $t.select().from(dt).orderBy(wo(dt.createdAt))}async getProduct(e){let[r]=await $t.select().from(dt).where(_t(dt.id,e));return r}async createProduct(e){let[r]=await $t.insert(dt).values({title:e.title,description:e.description,price:e.price,image:e.image,tags:e.tags??[],rating:e.rating??5,featured:e.featured??!1,type:e.type??"software",category:e.category??"General",joinLink:e.joinLink??"#"}).returning();return r}async updateProduct(e,r){let[n]=await $t.update(dt).set(r).where(_t(dt.id,e)).returning();return n}async deleteProduct(e){return(await $t.delete(dt).where(_t(dt.id,e)).returning()).length>0}},Et=new Mf;async function nS(t,e){return e.post("/api/admin/login",async(r,n)=>{let{password:i}=r.body,a=await Et.getUserByUsername("admin");if(!a)return i==="admin123"?(await Et.createUser({username:"admin",password:i}),n.json({success:!0})):n.status(401).json({error:"Invalid credentials"});if(a.password===i)return n.json({success:!0});n.status(401).json({error:"Invalid credentials"})}),e.post("/api/admin/reset-password",async(r,n)=>{let{newPassword:i}=r.body;if(!i)return n.status(400).json({error:"Password required"});await Et.getUserByUsername("admin")?await Et.updateUserPassword("admin",i):await Et.createUser({username:"admin",password:i}),n.json({success:!0})}),e.get("/api/products",async(r,n)=>{try{let i=await Et.getAllProducts();n.json(i)}catch{n.status(500).json({error:"Failed to fetch products"})}}),e.get("/api/products/:id",async(r,n)=>{try{let i=await Et.getProduct(r.params.id);if(!i)return n.status(404).json({error:"Product not found"});n.json(i)}catch{n.status(500).json({error:"Failed to fetch product"})}}),e.post("/api/products",async(r,n)=>{try{let i=Ko.safeParse(r.body);if(!i.success)return n.status(400).json({error:"Invalid product data",details:i.error});let a=await Et.createProduct(i.data);Wa("product_added",a),n.status(201).json(a)}catch{n.status(500).json({error:"Failed to create product"})}}),e.put("/api/products/:id",async(r,n)=>{try{let i=Pd.safeParse(r.body);if(!i.success)return n.status(400).json({error:"Invalid product data",details:i.error});let a=await Et.updateProduct(r.params.id,i.data);if(!a)return n.status(404).json({error:"Product not found"});Wa("product_updated",a),n.json(a)}catch{n.status(500).json({error:"Failed to update product"})}}),e.delete("/api/products/:id",async(r,n)=>{try{if(!await Et.deleteProduct(r.params.id))return n.status(404).json({error:"Product not found"});Wa("product_deleted",{id:r.params.id}),n.json({success:!0})}catch{n.status(500).json({error:"Failed to delete product"})}}),t}var iS=Tt(Bl(),1),aS=Tt(require("fs"),1),Ff=Tt(require("path"),1);function sS(t){let e=Ff.default.resolve(__dirname,"public");if(!aS.default.existsSync(e))throw new Error(`Could not find the build directory: ${e}, make sure to build the client first`);t.use(iS.default.static(e)),t.use("*",(r,n)=>{n.sendFile(Ff.default.resolve(e,"index.html"))})}var N8=require("http");var qj=Tt(lS(),1),Ij=Tt(am(),1),jj=Tt(cm(),1),gm=Tt(hm(),1),ym=Tt(O8(),1);var fn=(0,Tc.default)(),xm=(0,N8.createServer)(fn),Rj=new ym.default({server:xm,path:"/ws"}),bm=new Set;Rj.on("connection",t=>{bm.add(t),t.on("close",()=>{bm.delete(t)})});function Wa(t,e){let r=JSON.stringify({type:t,data:e});bm.forEach(n=>{n.readyState===gm.default.OPEN&&n.send(r)})}fn.use(Tc.default.json({verify:(t,e,r)=>{t.rawBody=r}}));fn.use(Tc.default.urlencoded({extended:!1}));function wm(t,e="express"){let r=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",second:"2-digit",hour12:!0});console.log(`${r} [${e}] ${t}`)}fn.use((t,e,r)=>{let n=Date.now(),i=t.path;e.on("finish",()=>{let a=Date.now()-n;i.startsWith("/api")&&wm(`${t.method} ${i} ${e.statusCode} in ${a}ms`)}),r()});(async()=>{await nS(xm,fn),fn.use((e,r,n,i)=>{let a=e.status||e.statusCode||500,s=e.message||"Internal Server Error";throw n.status(a).json({message:s}),e}),sS(fn);let t=parseInt(process.env.PORT||"5000",10);xm.listen({port:t,host:"0.0.0.0",reusePort:!0},()=>{wm(`serving on port ${t}`)})})();0&&(module.exports={broadcastUpdate,log});
+0|puretick |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+0|puretick |
+0|puretick | Error: DATABASE_URL environment variable is not set
+0|puretick |     at Object.<anonymous> (/var/www/puretickets/dist/index.cjs:78:99407)
+0|puretick |     at Module._compile (node:internal/modules/cjs/loader:1521:14)
+0|puretick |     at Module._extensions..js (node:internal/modules/cjs/loader:1623:10)
+0|puretick |     at Module.load (node:internal/modules/cjs/loader:1266:32)
+0|puretick |     at Module._load (node:internal/modules/cjs/loader:1091:12)
+0|puretick |     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+0|puretick |     at node:internal/main/run_main_module:28:49
+0|puretick |
+0|puretick | Node.js v20.19.6
+

@@ -162,9 +162,27 @@ fi
 
 sudo nginx -t && sudo systemctl restart nginx
 
-# Start with PM2
+# Create PM2 ecosystem file with environment variables
+cat > $APP_DIR/ecosystem.config.js << PMEOF
+module.exports = {
+  apps: [{
+    name: 'puretickets',
+    script: 'npm',
+    args: 'start',
+    cwd: '$APP_DIR',
+    env: {
+      NODE_ENV: 'production',
+      PORT: $PORT,
+      DATABASE_URL: 'postgres://$DB_USER:$DB_PASSWORD@localhost:5432/$DB_NAME'
+    }
+  }]
+};
+PMEOF
+
+# Start with PM2 using ecosystem file
+cd $APP_DIR
 pm2 delete puretickets 2>/dev/null || true
-pm2 start npm --name "puretickets" -- start
+pm2 start ecosystem.config.js
 pm2 save
 pm2 startup
 
