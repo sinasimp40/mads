@@ -440,13 +440,15 @@ export default function PremiumCardsPage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero + Products Unified Section */}
       <section className="relative overflow-hidden">
-        {/* Background Effects */}
+        {/* Unified Background Effects */}
         <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] opacity-50" />
-        <div className="absolute top-20 right-20 w-32 h-32 bg-violet-500/20 rounded-full blur-[60px]" />
-        <div className="absolute bottom-20 left-20 w-40 h-40 bg-blue-500/15 rounded-full blur-[80px]" />
+        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-primary/10 rounded-full blur-[150px] opacity-50" />
+        <div className="absolute top-20 right-20 w-40 h-40 bg-violet-500/20 rounded-full blur-[80px]" />
+        <div className="absolute top-[40%] left-10 w-48 h-48 bg-blue-500/15 rounded-full blur-[100px]" />
+        <div className="absolute top-[60%] right-1/4 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[20%] left-1/3 w-[400px] h-[400px] bg-primary/8 rounded-full blur-[100px]" />
         
         <div className="container mx-auto px-6 pt-24 pb-20 relative z-10">
           {/* Badge */}
@@ -556,44 +558,34 @@ export default function PremiumCardsPage() {
             </div>
           </motion.div>
         </div>
-      </section>
 
-      {/* Main Content */}
-      <section className="relative bg-gradient-to-b from-background via-background to-black/50">
-        {/* Background Effects */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px]" />
-          <div className="absolute bottom-20 right-1/4 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-[120px]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-blue-500/5 rounded-full blur-[100px]" />
-        </div>
-        <main id="products-section" className="relative container mx-auto px-6 py-16 pb-24">
-        {/* Grid */}
-        <AnimatePresence mode="popLayout">
-          <motion.div 
-            layout
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          >
-            {products.map((product) => (
-              <PremiumCard 
-                key={product.id} 
-                product={product} 
-                onDelete={isAdmin ? handleDelete : undefined}
-                onEdit={isAdmin ? handleEdit : undefined}
-              />
-            ))}
-            {products.length === 0 && (
-              <div className="col-span-full py-24 text-center">
-                <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <X className="w-8 h-8 text-muted-foreground" />
+        {/* Products Grid - Same Section */}
+        <div id="products-section" className="container mx-auto px-6 py-16 pb-24 relative z-10">
+          <AnimatePresence mode="popLayout">
+            <motion.div 
+              layout
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            >
+              {products.map((product) => (
+                <PremiumCard 
+                  key={product.id} 
+                  product={product} 
+                  onDelete={isAdmin ? handleDelete : undefined}
+                  onEdit={isAdmin ? handleEdit : undefined}
+                />
+              ))}
+              {products.length === 0 && (
+                <div className="col-span-full py-24 text-center">
+                  <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <X className="w-8 h-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-2">No products found</h3>
+                  <p className="text-muted-foreground">Try adjusting your search or filters</p>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">No products found</h3>
-                <p className="text-muted-foreground">Try adjusting your search or filters</p>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-      </main>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </section>
 
       {/* Footer */}
