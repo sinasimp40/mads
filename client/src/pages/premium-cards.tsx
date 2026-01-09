@@ -164,7 +164,7 @@ const PremiumCard = ({
               ))}
             </div>
             <span className="text-xs text-muted-foreground">
-              ({product.reviews})
+              ({product.rating?.toFixed(1) || "0.0"})
             </span>
           </div>
           {isCommunity && (
@@ -554,40 +554,23 @@ export default function PremiumCardsPage() {
                         }
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label>Rating (1-5)</Label>
-                        <Input
-                          type="number"
-                          min="1"
-                          max="5"
-                          placeholder="5"
-                          className="bg-black/50 border-white/10"
-                          value={newProduct.rating || 5}
-                          onChange={(e) =>
-                            setNewProduct({
-                              ...newProduct,
-                              rating: Math.min(5, Math.max(1, parseInt(e.target.value) || 5)),
-                            })
-                          }
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Reviews Count</Label>
-                        <Input
-                          type="number"
-                          min="0"
-                          placeholder="0"
-                          className="bg-black/50 border-white/10"
-                          value={newProduct.reviews || 0}
-                          onChange={(e) =>
-                            setNewProduct({
-                              ...newProduct,
-                              reviews: Math.max(0, parseInt(e.target.value) || 0),
-                            })
-                          }
-                        />
-                      </div>
+                    <div className="space-y-2">
+                      <Label>Rating (0-5, decimals allowed)</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        max="5"
+                        step="0.1"
+                        placeholder="4.5"
+                        className="bg-black/50 border-white/10"
+                        value={newProduct.rating ?? 5}
+                        onChange={(e) =>
+                          setNewProduct({
+                            ...newProduct,
+                            rating: Math.min(5, Math.max(0, parseFloat(e.target.value) || 0)),
+                          })
+                        }
+                      />
                     </div>
                     <div className="flex items-center gap-4 pt-2">
                       <label className="flex items-center gap-2 cursor-pointer">
