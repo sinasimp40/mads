@@ -149,76 +149,13 @@ const PremiumCard = ({ product, onDelete, onEdit }: {
   );
 };
 
-// Hardcoded Products - Edit this array to update products for all devices
-const HARDCODED_PRODUCTS: ProductCardProps[] = [
-  {
-    id: "tm-aged-1",
-    title: "Aged Ticketmaster Account - 2+ Years",
-    description: "Premium aged Ticketmaster account with 2+ years of history. Clean record, verified email, ready for immediate use on any event.",
-    price: "$49.99",
-    image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800",
-    tags: ["Aged", "Verified", "Premium"],
-    rating: 5,
-    reviews: 124,
-    featured: true,
-    type: "software",
-    joinLink: "#"
-  },
-  {
-    id: "tm-aged-2",
-    title: "Aged Ticketmaster Account - 5+ Years",
-    description: "Ultra-premium account with 5+ years of purchasing history. Highest priority queue access and maximum reliability.",
-    price: "$89.99",
-    image: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800",
-    tags: ["Ultra Aged", "VIP", "Top Tier"],
-    rating: 5,
-    reviews: 89,
-    featured: true,
-    type: "software",
-    joinLink: "#"
-  },
-  {
-    id: "tm-fresh-1",
-    title: "Fresh Ticketmaster Account",
-    description: "Brand new verified Ticketmaster account. Email verified, phone verified, ready to use instantly.",
-    price: "$19.99",
-    image: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800",
-    tags: ["Fresh", "Verified", "Instant"],
-    rating: 4,
-    reviews: 256,
-    featured: false,
-    type: "software",
-    joinLink: "#"
-  },
-  {
-    id: "tm-bulk-1",
-    title: "Bulk Account Pack (10x)",
-    description: "Pack of 10 fresh verified Ticketmaster accounts. Perfect for resellers and high-volume buyers.",
-    price: "$149.99",
-    image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800",
-    tags: ["Bulk", "Value Pack", "Reseller"],
-    rating: 5,
-    reviews: 67,
-    featured: false,
-    type: "software",
-    joinLink: "#"
-  }
-];
-
 export default function PremiumCardsPage() {
-  // Use hardcoded products - same for all devices
-  const [products, setProducts] = useState<ProductCardProps[]>(HARDCODED_PRODUCTS);
-
+  const [products, setProducts] = useState<ProductCardProps[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem("admin_auth") === "true");
   const [dialogOpen, setDialogOpen] = useState(false);
-
-  const handleLogout = () => {
-    localStorage.removeItem("admin_auth");
-    setIsAdmin(false);
-  };
   const [editingProduct, setEditingProduct] = useState<ProductCardProps | null>(null);
 
-  // Form State
   const [newProduct, setNewProduct] = useState<Partial<ProductCardProps>>({
     type: "community",
     rating: 5,
@@ -229,9 +166,32 @@ export default function PremiumCardsPage() {
     price: ""
   });
 
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("/api/products");
+      if (res.ok) {
+        const data = await res.json();
+        setProducts(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   useEffect(() => {
     if (isAdmin) localStorage.setItem("admin_auth", "true");
   }, [isAdmin]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("admin_auth");
+    setIsAdmin(false);
+  };
 
   const resetForm = () => {
     setNewProduct({
@@ -247,33 +207,55 @@ export default function PremiumCardsPage() {
     setDialogOpen(false);
   };
 
-  const handleAddProduct = () => {
+  const handleAddProduct = async () => {
     if (!newProduct.title || !newProduct.description) return;
     
-    if (editingProduct) {
-      // Update existing product - creates new array reference for React to detect change
-      setProducts(prev => prev.map(p => 
-        p.id === editingProduct.id ? { ...p, ...newProduct } as ProductCardProps : p
-      ));
-    } else {
-      // Add new product
-      const product: ProductCardProps = {
-        id: Math.random().toString(36).substr(2, 9),
-        title: newProduct.title as string,
-        description: newProduct.description as string,
-        price: newProduct.price || "Free",
-        image: newProduct.image || "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
-        tags: newProduct.tags || ["General"],
-        rating: newProduct.rating || 5,
-        reviews: newProduct.reviews || 0,
-        featured: newProduct.featured || false,
-        type: newProduct.type as any,
-        joinLink: newProduct.joinLink || "#"
-      };
-      setProducts(prev => [product, ...prev]);
+    try {
+      if (editingProduct) {
+        const res = await fetch(`/api/products/${editingProduct.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: newProduct.title,
+            description: newProduct.description,
+            price: newProduct.price || "Free",
+            image: newProduct.image || "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
+            tags: newProduct.tags || ["General"],
+            rating: newProduct.rating || 5,
+            reviews: newProduct.reviews || 0,
+            featured: newProduct.featured || false,
+            type: newProduct.type || "software",
+            joinLink: newProduct.joinLink || "#"
+          }),
+        });
+        if (res.ok) {
+          await fetchProducts();
+        }
+      } else {
+        const res = await fetch("/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: newProduct.title,
+            description: newProduct.description,
+            price: newProduct.price || "Free",
+            image: newProduct.image || "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
+            tags: newProduct.tags || ["General"],
+            rating: newProduct.rating || 5,
+            reviews: newProduct.reviews || 0,
+            featured: newProduct.featured || false,
+            type: newProduct.type || "software",
+            joinLink: newProduct.joinLink || "#"
+          }),
+        });
+        if (res.ok) {
+          await fetchProducts();
+        }
+      }
+    } catch (error) {
+      console.error("Failed to save product:", error);
     }
 
-    // Close dialog and reset form immediately
     resetForm();
   };
 
@@ -283,8 +265,15 @@ export default function PremiumCardsPage() {
     setDialogOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    setProducts(prev => prev.filter(p => p.id !== id));
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        await fetchProducts();
+      }
+    } catch (error) {
+      console.error("Failed to delete product:", error);
+    }
   };
 
   return (
