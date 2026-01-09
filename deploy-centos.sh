@@ -122,8 +122,8 @@ NODE_ENV=production
 PORT=${PORT}
 ENVEOF
 
-# Create PM2 ecosystem file with environment variables baked in
-cat > $APP_DIR/ecosystem.config.js << ECOEOF
+# Create PM2 ecosystem file with environment variables baked in (.cjs for ES module compatibility)
+cat > $APP_DIR/ecosystem.config.cjs << ECOEOF
 module.exports = {
   apps: [{
     name: 'puretickets',
@@ -186,7 +186,7 @@ sudo nginx -t && sudo systemctl restart nginx
 # Start with PM2 using ecosystem file
 cd $APP_DIR
 pm2 delete puretickets 2>/dev/null || true
-pm2 start ecosystem.config.js
+pm2 start ecosystem.config.cjs
 pm2 save
 pm2 startup
 
