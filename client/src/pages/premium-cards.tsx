@@ -182,6 +182,13 @@ export default function PremiumCardsPage() {
 
   useEffect(() => {
     fetchProducts();
+    
+    // Auto-refresh every 3 seconds to sync across devices
+    const interval = setInterval(() => {
+      fetchProducts();
+    }, 3000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
