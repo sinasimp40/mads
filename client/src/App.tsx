@@ -11,7 +11,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={PremiumCardsPage} />
-      <Route path="/admin" component={AdminLoginPage} />
+      <Route path="/pt" component={AdminLoginPage} />
       <Route component={NotFound} />
     </Switch>
   );
