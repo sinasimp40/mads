@@ -149,19 +149,65 @@ const PremiumCard = ({ product, onDelete, onEdit }: {
   );
 };
 
-// Initial Mock Data (Empty for users to populate)
-const INITIAL_PRODUCTS: ProductCardProps[] = [];
+// Hardcoded Products - Edit this array to update products for all devices
+const HARDCODED_PRODUCTS: ProductCardProps[] = [
+  {
+    id: "tm-aged-1",
+    title: "Aged Ticketmaster Account - 2+ Years",
+    description: "Premium aged Ticketmaster account with 2+ years of history. Clean record, verified email, ready for immediate use on any event.",
+    price: "$49.99",
+    image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?w=800",
+    tags: ["Aged", "Verified", "Premium"],
+    rating: 5,
+    reviews: 124,
+    featured: true,
+    type: "software",
+    joinLink: "#"
+  },
+  {
+    id: "tm-aged-2",
+    title: "Aged Ticketmaster Account - 5+ Years",
+    description: "Ultra-premium account with 5+ years of purchasing history. Highest priority queue access and maximum reliability.",
+    price: "$89.99",
+    image: "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800",
+    tags: ["Ultra Aged", "VIP", "Top Tier"],
+    rating: 5,
+    reviews: 89,
+    featured: true,
+    type: "software",
+    joinLink: "#"
+  },
+  {
+    id: "tm-fresh-1",
+    title: "Fresh Ticketmaster Account",
+    description: "Brand new verified Ticketmaster account. Email verified, phone verified, ready to use instantly.",
+    price: "$19.99",
+    image: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800",
+    tags: ["Fresh", "Verified", "Instant"],
+    rating: 4,
+    reviews: 256,
+    featured: false,
+    type: "software",
+    joinLink: "#"
+  },
+  {
+    id: "tm-bulk-1",
+    title: "Bulk Account Pack (10x)",
+    description: "Pack of 10 fresh verified Ticketmaster accounts. Perfect for resellers and high-volume buyers.",
+    price: "$149.99",
+    image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800",
+    tags: ["Bulk", "Value Pack", "Reseller"],
+    rating: 5,
+    reviews: 67,
+    featured: false,
+    type: "software",
+    joinLink: "#"
+  }
+];
 
 export default function PremiumCardsPage() {
-  // Load products from localStorage on mount
-  const [products, setProducts] = useState<ProductCardProps[]>(() => {
-    try {
-      const stored = localStorage.getItem("premium_products");
-      return stored ? JSON.parse(stored) : [];
-    } catch {
-      return [];
-    }
-  });
+  // Use hardcoded products - same for all devices
+  const [products, setProducts] = useState<ProductCardProps[]>(HARDCODED_PRODUCTS);
 
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem("admin_auth") === "true");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -182,11 +228,6 @@ export default function PremiumCardsPage() {
     joinLink: "https://",
     price: ""
   });
-
-  // Save products to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem("premium_products", JSON.stringify(products));
-  }, [products]);
 
   useEffect(() => {
     if (isAdmin) localStorage.setItem("admin_auth", "true");
