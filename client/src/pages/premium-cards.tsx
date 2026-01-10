@@ -807,9 +807,7 @@ export default function PremiumCardsPage() {
             {/* Brand */}
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-violet-500 flex items-center justify-center">
-                  <Crown className="w-4 h-4 text-white" />
-                </div>
+                <img src="/favicon.png" alt="PureTickets" className="w-8 h-8 rounded-lg" />
                 <span className="text-lg font-bold bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
                   PureTickets.pro
                 </span>
